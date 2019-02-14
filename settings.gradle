@@ -1,1 +1,1 @@
-include ':app', ':baseAdapter', ':asyncTask'
+include ':app', ':baseAdapter', ':asyncTask', ':asyncTaskIntro'
