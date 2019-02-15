@@ -1,14 +1,19 @@
 package com.aooled_laptop.sqlite;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 
+import com.aooled_laptop.bean.Person;
 import com.aooled_laptop.utils.Constant;
 import com.aooled_laptop.utils.DbManger;
 import com.aooled_laptop.utils.MySqliteHelper;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private MySqliteHelper helper;
@@ -55,6 +60,16 @@ public class MainActivity extends AppCompatActivity {
                 db = helper.getWritableDatabase();
                 String delSql = "delete from " + Constant.TABLE_NAME + " where " + Constant._ID + "=2";
                 DbManger.execSQL(db, delSql);
+                db.close();
+                break;
+            case R.id.btn_query:
+                db = helper.getWritableDatabase();
+                String selectSql = "select * from " + Constant.TABLE_NAME;
+                Cursor cursor = DbManger.selectDataBySql(db, selectSql, null);
+                List<Person> list = DbManger.cursorToList(cursor);
+                for (Person p : list){
+                    Log.i("tag", p.toString());
+                }
                 db.close();
                 break;
         }
