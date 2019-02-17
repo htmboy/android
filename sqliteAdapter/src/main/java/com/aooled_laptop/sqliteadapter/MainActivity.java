@@ -81,4 +81,23 @@ public class MainActivity extends AppCompatActivity {
      public void loadDatabase(View view) {
         startActivity(new Intent(this, CursorAdapterActivity.class));
     }
+
+    // 使用事务操作使用三部
+    public void insertData(View view){
+        SQLiteDatabase db = helper.getWritableDatabase();
+        // 1, 数据库显示开启事务
+        db.beginTransaction();
+        for (int i = 1; i <= 100; i++) {
+            String sql = "insert into " + Constant.TABLE_NAME + " values(" + i + ",'小慕" + i + "',18)";
+        }
+        // 2, 提交当前事务
+        db.setTransactionSuccessful();
+        // 3, 关闭事务
+        db.endTransaction();
+        db.close();
+    }
+
+    public void loadPagination(View view){
+        startActivity(new Intent(this, Pagination.class));
+    }
 }

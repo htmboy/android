@@ -60,4 +60,45 @@ public class DbManger {
         }
         return list;
     }
+
+    /**
+     * 根据数据库以及数据表名称获取表中数据总条目
+     * @param db
+     * @param tableName
+     * @return
+     */
+    public static int getDataCount(SQLiteDatabase db, String tableName){
+
+        int count = 0;
+        if (db != null){
+            Cursor cursor = db.rawQuery("select * from " + tableName, null);
+            count = cursor.getCount();
+        }
+        return count;
+    }
+
+    /**
+     * 根据当前的页码查询获取该页码对应的集合数据
+     *
+     * @param db
+     * @param tableName
+     * @param currentPage 当前页码
+     * @return 当前页对应的集合
+     *
+     * select * from person limit ?,?
+     * 0,20 1
+     * 20,20 2
+     * 40,20 3
+     */
+    public static List<Person> getListByCurrentPage(SQLiteDatabase db, String tableName, int currentPage, int pageSize){
+        int index = (currentPage - 1) * pageSize; // 获取当前页码第一条数据的下标
+        Cursor cursor = null;
+        if(db != null){
+            String sql = "select * from " + tableName + " limit ?,?";
+            // 占位符的取值
+            cursor = db.rawQuery(sql, new String[]{index + "", pageSize + ""});
+        }
+
+        return cursorToList(cursor);
+    }
 }

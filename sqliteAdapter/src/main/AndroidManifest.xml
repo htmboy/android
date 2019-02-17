@@ -17,6 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".CursorAdapterActivity"/>
+        <activity android:name=".Pagination"/>
     </application>
 
 </manifest>
