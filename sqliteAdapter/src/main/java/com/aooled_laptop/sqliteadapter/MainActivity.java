@@ -1,4 +1,4 @@
-package com.aooled_laptop.sqlite;
+package com.aooled_laptop.sqliteadapter;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CursorAdapter;
 
 
 import com.aooled_laptop.bean.Person;
@@ -17,7 +18,7 @@ import com.aooled_laptop.utils.MySqliteHelper;
 
 import java.util.List;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
     private MySqliteHelper helper;
 
     @Override
@@ -78,6 +79,6 @@ public class MainActivity extends Activity {
     }
 
      public void loadDatabase(View view) {
-        startActivity(new Intent(this, DataList.class));
+        startActivity(new Intent(this, CursorAdapterActivity.class));
     }
 }

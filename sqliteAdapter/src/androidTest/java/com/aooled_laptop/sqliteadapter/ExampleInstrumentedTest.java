@@ -1,4 +1,4 @@
-package com.aooled_laptop.sqlite;
+package com.aooled_laptop.sqliteadapter;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.aooled_laptop.sqlite", appContext.getPackageName());
+        assertEquals("com.aooled_laptop.sqliteadapter", appContext.getPackageName());
     }
 }

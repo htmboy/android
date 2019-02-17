@@ -1,4 +1,4 @@
-package com.aooled_laptop.sqlite;
+package com.aooled_laptop.sqliteadapter;
 
 import org.junit.Test;
 

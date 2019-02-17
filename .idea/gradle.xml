@@ -12,7 +12,7 @@
             <option value="$PROJECT_DIR$/asyncTask" />
             <option value="$PROJECT_DIR$/asyncTaskIntro" />
             <option value="$PROJECT_DIR$/baseAdapter" />
-            <option value="$PROJECT_DIR$/sqlite" />
+            <option value="$PROJECT_DIR$/sqliteAdapter" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
