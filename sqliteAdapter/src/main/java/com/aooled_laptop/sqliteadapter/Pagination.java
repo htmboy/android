@@ -1,10 +1,12 @@
 package com.aooled_laptop.sqliteadapter;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.AbsListView;
 import android.widget.ListView;
 
 import com.aooled_laptop.bean.Person;
@@ -34,6 +36,7 @@ public class Pagination extends AppCompatActivity {
     private int currentpPage = 1;
     private List<Person> totalList; // 表示数据源
     private MyBaseAdapter adapter;
+    private boolean isDivPage;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,5 +52,23 @@ public class Pagination extends AppCompatActivity {
         adapter = new MyBaseAdapter(this, totalList);
 
         lv.setAdapter(adapter);
+
+        lv.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if(isDivPage && AbsListView.OnScrollListener.SCROLL_STATE_IDLE == scrollState) {
+                    if(currentpPage < pageNum){
+                        currentpPage++;
+                        totalList.addAll(DbManger.getListByCurrentPage(db, Constant.TABLE_NAME, currentpPage, pageSize));
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                isDivPage = ((firstVisibleItem + visibleItemCount) == totalItemCount);
+            }
+        });
     }
 }
