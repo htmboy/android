@@ -2,7 +2,6 @@ package com.aooled_laptop.httpupload;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.aooled_laptop.httpupload.task.HttpListener;
@@ -18,13 +17,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.net.ssl.HttpsURLConnection;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -53,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RequestExecutor.INTANCE.execute(request, new HttpListener() {
             @Override
             public void onSucceed(Response response) {
-                Logger.i("Activity 接受到的响应码:" + response.getRespinseCode());
+                Logger.i("Activity 接受到的响应码:" + response.getResponseCode());
                 Logger.i("Activity 接受到的结果:" + response.getRequest());
             }
 

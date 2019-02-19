@@ -4,6 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSocketFactory;
+
 public class Request {
     /**
      * 请求地址
@@ -18,6 +21,10 @@ public class Request {
      */
     private List<KeyValue> keyValues;
 
+    private SSLSocketFactory mSslSocketFactory;
+
+    private HostnameVerifier mHostnameVerifier;
+
     public Request(String url) {
         this(url, RequestMethod.GET);
     }
@@ -26,6 +33,22 @@ public class Request {
         this.url = url;
         this.method = method;
         this.keyValues = new ArrayList<>();
+    }
+
+    /**
+     * 设置ssl证书
+     * @param sslSocketFactory
+     */
+    public void setSSLSocketFactory(SSLSocketFactory sslSocketFactory){
+        this.mSslSocketFactory = sslSocketFactory;
+    }
+
+    /**
+     * 设置服务器主机认证规则
+     * @param hostnameVerifier
+     */
+    public void setHostnameVerifier(HostnameVerifier hostnameVerifier){
+        this.mHostnameVerifier = hostnameVerifier;
     }
 
     public void add(String key, int value){
@@ -43,6 +66,26 @@ public class Request {
     public void add(String key, File value){
 
         keyValues.add(new KeyValue(key, value));
+    }
+
+    public SSLSocketFactory getSslSocketFactory() {
+        return mSslSocketFactory;
+    }
+
+    public HostnameVerifier getHostnameVerifier() {
+        return mHostnameVerifier;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public RequestMethod getMethod() {
+        return method;
+    }
+
+    public List<KeyValue> getKeyValues() {
+        return keyValues;
     }
 
     public String toString(){

@@ -11,7 +11,7 @@ public class Response {
     /**
      * 服务器的响应码
      */
-    private int respinseCode;
+    private int responseCode;
     /**
      * 服务器的响应数据
      */
@@ -26,9 +26,9 @@ public class Response {
      */
     private  Exception exception;
 
-    public Response(Request request, int respinseCode, Map<String, List<String>> responseHeaders, String result, Exception exception) {
+    public Response(Request request, int responseCode, Map<String, List<String>> responseHeaders, String result, Exception exception) {
         this.request = request;
-        this.respinseCode = respinseCode;
+        this.responseCode = responseCode;
         this.responseHeaders = responseHeaders;
         this.result = result;
         this.exception = exception;
@@ -38,8 +38,8 @@ public class Response {
         return request;
     }
 
-    public int getRespinseCode() {
-        return respinseCode;
+    public int getResponseCode() {
+        return responseCode;
     }
 
 
