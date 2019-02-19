@@ -1,1 +1,1 @@
-include ':app', ':baseAdapter', ':asyncTask', ':asyncTaskIntro', ':sqliteAdapter', ':listViewHeader', ':httpUrl'
+include ':app', ':baseAdapter', ':asyncTask', ':asyncTaskIntro', ':sqliteAdapter', ':listViewHeader', ':httpUrl', ':HttpUpload'
