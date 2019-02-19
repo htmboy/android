@@ -5,6 +5,10 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.aooled_laptop.httpupload.task.HttpListener;
+import com.aooled_laptop.httpupload.task.Request;
+import com.aooled_laptop.httpupload.task.RequestExecutor;
+import com.aooled_laptop.httpupload.task.Response;
 import com.aooled_laptop.httpupload.util.Constants;
 import com.aooled_laptop.httpupload.util.Logger;
 import com.aooled_laptop.httpupload.util.ThreadUtils;
@@ -38,7 +42,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    // get请求
+    /**
+     * 异步执行get请求
+     */
+    private void requestGet(){
+        Request request = new Request("http://139.199.77.144:8081");
+        request.add("username", "htmboy");
+        request.add("password", "123456");
+
+        RequestExecutor.INTANCE.execute(request, new HttpListener() {
+            @Override
+            public void onSucceed(Response response) {
+                Logger.i("Activity 接受到的响应码:" + response.getRespinseCode());
+                Logger.i("Activity 接受到的结果:" + response.getRequest());
+            }
+
+            @Override
+            public void onFailed(Exception e) {
+
+            }
+        });
+    }
+
+    /**
+     * get请求
+     */
     private void getRequest(){
         ThreadUtils.execute(new Runnable() {
             @Override
@@ -91,7 +119,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    // head 请求
+    /**
+     * head请求
+     */
     private void headRequest(){
         ThreadUtils.execute(new Runnable() {
             @Override
@@ -144,7 +174,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    // post put delete 请求
+    /**
+     * post请求
+     */
     private void postRequest(){
         ThreadUtils.execute(new Runnable() {
             @Override
@@ -191,7 +223,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    // 读取数据
+    /**
+     * 读取数据信息
+     * @param inputStream
+     * @throws IOException
+     */
     private void readServerData(InputStream inputStream) throws IOException {
         byte[] buffer = new byte[1024];
         int len;
@@ -209,7 +245,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_get:{
-                getRequest();
+                requestGet();
+//                getRequest();
                 break;
             }
             case R.id.btn_head:{
