@@ -16,4 +16,15 @@ public enum RequestMethod {
     public String toString(){
         return value;
     }
+
+    public boolean isOutputMethod(){
+        switch(this){
+            case POST:
+                return true;
+            case DELETE:
+                return true;
+            default:
+                return false;
+        }
+    }
 }

@@ -32,6 +32,7 @@ public class RequestTask implements Runnable {
         Logger.i("url: " + urlStr);
         Logger.i("method: " + method);
         HttpURLConnection urlConnection = null;
+        OutputStream outputStream = null;
         try {
             URL url = new URL(urlStr);
             /**
@@ -47,8 +48,17 @@ public class RequestTask implements Runnable {
                 if(hostnameVerifier != null)
                     httpsURLConnection.setHostnameVerifier(hostnameVerifier); // 服务器主机认证
             }
-            OutputStream outputStream = urlConnection.getOutputStream();
+            // 设置基础信息, 即请求头
+            urlConnection.setRequestMethod(method.value());
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(method.isOutputMethod());
 
+            setHeader(urlConnection, request);
+
+            // 发送数据
+            if (method.isOutputMethod()){
+                outputStream = urlConnection.getOutputStream();
+            }
         } catch (java.io.IOException e) {
             exception = e;
         }finally {
@@ -61,6 +71,25 @@ public class RequestTask implements Runnable {
         Message message = new Message(response, httpListener);
 
         Poster.getInstance().post(message);
+    }
+
+    /**
+     * 给rulconnection 设置请求头
+     * @param urlConnection
+     * @param request
+     */
+    private void setHeader(HttpURLConnection urlConnection, Request request){
+        Map<String, String> requestHeader = request.getmRequestHeader();
+        // 处理contentType
+        String contentType = request.get1ContentType();
+        requestHeader.put("Content-Type", contentType);
+        // 处理contentlength
+
+        for (Map.Entry<String, String> stringStringEntry :requestHeader.entrySet()){
+            String headKey = stringStringEntry.getKey();
+            String headValue = stringStringEntry.getValue();
+            urlConnection.setRequestProperty(headKey, headValue);
+        }
     }
 
 }
