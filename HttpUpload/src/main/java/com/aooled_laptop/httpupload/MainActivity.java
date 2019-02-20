@@ -1,5 +1,6 @@
 package com.aooled_laptop.httpupload;
 
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -7,12 +8,14 @@ import android.view.View;
 import com.aooled_laptop.httpupload.task.HttpListener;
 import com.aooled_laptop.httpupload.task.Request;
 import com.aooled_laptop.httpupload.task.RequestExecutor;
+import com.aooled_laptop.httpupload.task.RequestMethod;
 import com.aooled_laptop.httpupload.task.Response;
 import com.aooled_laptop.httpupload.util.Constants;
 import com.aooled_laptop.httpupload.util.Logger;
 import com.aooled_laptop.httpupload.util.ThreadUtils;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -42,15 +45,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 异步执行get请求
      */
     private void requestGet(){
-        Request request = new Request("http://139.199.77.144:8081");
+        String rootPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        File file = new File(rootPath + "/image/图片名称.jpg");
+        File file2 = new File(rootPath + "/image/图片名称.jpg");
+        File file3 = new File(rootPath + "/image/图片名称.jpg");
+        File file4 = new File(rootPath + "/image/图片名称.jpg");
+        Request request = new Request(Constants.URL_UPLOAD, RequestMethod.POST);
         request.add("username", "htmboy");
         request.add("password", "123456");
+        request.add("image", file);
+        request.add("image", file2);
 
         RequestExecutor.INTANCE.execute(request, new HttpListener() {
             @Override
             public void onSucceed(Response response) {
                 Logger.i("Activity 接受到的响应码:" + response.getResponseCode());
-                Logger.i("Activity 接受到的结果:" + response.getRequest());
+                byte[] responseBody = response.getResponseBody();
+                String str = new String(responseBody);
+                Logger.i("Activity 接受到的结果:" + str);
             }
 
             @Override

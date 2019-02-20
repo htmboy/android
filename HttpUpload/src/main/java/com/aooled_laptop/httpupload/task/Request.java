@@ -25,7 +25,7 @@ public class Request {
 
     private String boundary = createBoundary();
     private String startBoundary = "--" + boundary;
-    private String endBoundary = boundary + "--";
+    private String endBoundary = startBoundary + "--";
     /**
      * 请求地址
      */
@@ -148,6 +148,10 @@ public class Request {
         this.mContentType = contentType;
     }
 
+    /**
+     * 设置提交参数的编码格式
+     * @param charset
+     */
     public void setCharset(String charset){
         mCharSet = charset;
     }
@@ -162,7 +166,7 @@ public class Request {
          *  -----------------------------------------
          *
          */
-            return "multipart/form-data; boundary" + boundary; // 提交表单特殊contentType
+            return "multipart/form-data; boundary=" + boundary; // 提交表单特殊contentType
         // 如果用户没有设置,并且没有文件, 则视为一般性的提交
         return "application/x-www-form-urlencoded";
     }
@@ -202,8 +206,8 @@ public class Request {
      * @param outputStream
      * @throws IOException
      */
-    private void onWriteBody(OutputStream outputStream) throws IOException {
-        if(!enableFormData && !hasFile())
+    public void onWriteBody(OutputStream outputStream) throws IOException {
+        if(enableFormData || hasFile())
             writeFormData(outputStream);
         else
             writeStringData(outputStream);
@@ -231,7 +235,9 @@ public class Request {
                 writeFormFileData(outputStream, key, (File)value);
             else
                 writeFormStringData(outputStream, key, (String)value);
+            outputStream.write("\r\n".getBytes());
         }
+        outputStream.write(endBoundary.getBytes());
     }
 
     /**
@@ -247,13 +253,12 @@ public class Request {
             String extension = MimeTypeMap.getFileExtensionFromUrl(fileName);
             mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
         }
-        StringBuilder builder = new StringBuilder();
-        builder.append(startBoundary).append("\r\n");
-        builder.append("Content-Disposition: form-data; name=\"").append(key).append("\"; filename=\"")
-                .append(fileName).append("\"").append("\r\n");
-        builder.append("Content-Type: ").append(mimeType);
-        builder.append("\r\n\r\n");
-        outputStream.write(builder.toString().getBytes(mCharSet));
+        String builder = startBoundary + "\r\n" +
+                "Content-Disposition: form-data; name=\"" + key + "\"; filename=\"" +
+                fileName + "\"" + "\r\n" +
+                "Content-Type: " + mimeType +
+                "\r\n\r\n";
+        outputStream.write(builder.getBytes(mCharSet));
 
         if (outputStream instanceof CounterOutputStream) {
             ((CounterOutputStream)outputStream).write(value.length());
@@ -275,26 +280,12 @@ public class Request {
      * @param value
      */
     private void writeFormStringData(OutputStream outputStream, String key, String value) throws IOException {
-        StringBuilder builder = new StringBuilder();
-        builder.append(startBoundary).append("\r\n");
-        builder.append("Content-Disposition: form-data; name=\"").append(key).append("\"").append("\r\n");
-        builder.append("Content-Type: text/plain; charset=\"").append(mCharSet).append("\"").append("\r\n");
-        builder.append("\r\n\r\n");
-        builder.append(value);
-        outputStream.write(builder.toString().getBytes(mCharSet));
-    }
-
-    /**
-     * 写出请求对象的包体, 由请求对象自己决定
-     * @param outputStream
-     */
-    public void writeBody(OutputStream outputStream){
-        if(!enableFormData && !hasFile()){
-            // 普通post
-        }else if(enableFormData || hasFile()){
-            // 模拟表单
-        }
-
+        String builder = startBoundary + "\r\n" +
+                "Content-Disposition: form-data; name=\"" + key + "\"" + "\r\n" +
+                "Content-Type: text/plain; charset=\"" + mCharSet + "\"" + "\r\n" +
+                "\r\n\r\n" +
+                value;
+        outputStream.write(builder.getBytes(mCharSet));
     }
 
     /**
@@ -307,12 +298,12 @@ public class Request {
         enableFormData = enable;
     }
 
-    public List<KeyValue> getmKeyValues() {
+    List<KeyValue> getmKeyValues() {
         return mKeyValues;
     }
 
     protected String createBoundary(){
-        return "htmboy" + UUID.randomUUID();
+        return "--htmboy" + UUID.randomUUID();
     }
 
     /**
@@ -326,7 +317,8 @@ public class Request {
             if(value instanceof String){
                 builder.append("&");
                 try {
-                    builder.append(URLEncoder.encode(mKeyValue.getKey(), mCharSet));                    builder.append(URLEncoder.encode(mKeyValue.getKey(), mCharSet));
+                    builder.append(URLEncoder.encode(mKeyValue.getKey(), mCharSet));
+                    builder.append("=");
                     builder.append(URLEncoder.encode((String) value, mCharSet));
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();

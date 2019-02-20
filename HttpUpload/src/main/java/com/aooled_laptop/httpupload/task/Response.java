@@ -15,7 +15,7 @@ public class Response {
     /**
      * 服务器的响应数据
      */
-    private String result;
+    private byte[] responseBody;
 
     /**
      * 服务器的响应头
@@ -26,11 +26,11 @@ public class Response {
      */
     private  Exception exception;
 
-    public Response(Request request, int responseCode, Map<String, List<String>> responseHeaders, String result, Exception exception) {
+    public Response(Request request, int responseCode, Map<String, List<String>> responseHeaders, byte[] responseBody, Exception exception) {
         this.request = request;
         this.responseCode = responseCode;
         this.responseHeaders = responseHeaders;
-        this.result = result;
+        this.responseBody = responseBody;
         this.exception = exception;
     }
 
@@ -42,9 +42,8 @@ public class Response {
         return responseCode;
     }
 
-
-    public String getResult() {
-        return result;
+    public byte[] getResponseBody(){
+        return responseBody;
     }
 
     public Map<String, List<String>> getResponseHeaders() {
