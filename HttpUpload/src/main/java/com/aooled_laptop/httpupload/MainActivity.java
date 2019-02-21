@@ -46,15 +46,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void requestGet(){
         String rootPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        File file = new File(rootPath + "/image/图片名称.jpg");
-        File file2 = new File(rootPath + "/image/图片名称.jpg");
-        File file3 = new File(rootPath + "/image/图片名称.jpg");
-        File file4 = new File(rootPath + "/image/图片名称.jpg");
+        File file = new File(rootPath + "/image/01.jpg");
+        File file2 = new File(rootPath + "/image/02.jpg");
+        File file3 = new File(rootPath + "/image/03.jpg");
+        File file4 = new File(rootPath + "/image/04.jpg");
         Request request = new Request(Constants.URL_UPLOAD, RequestMethod.POST);
         request.add("username", "htmboy");
         request.add("password", "123456");
         request.add("image", file);
-        request.add("image", file2);
 
         RequestExecutor.INTANCE.execute(request, new HttpListener() {
             @Override
@@ -67,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onFailed(Exception e) {
-
+                Logger.i("请求失败: " + e.getMessage());
             }
         });
     }

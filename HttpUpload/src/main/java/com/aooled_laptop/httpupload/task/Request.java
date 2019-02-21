@@ -114,15 +114,17 @@ public class Request {
      * @return
      */
     public String getUrl() {
-        StringBuilder urlBuilder = new StringBuilder();
+        StringBuilder urlBuilder = new StringBuilder(url);
         String paramsStr = buildParamsString();
         if(!method.isOutputMethod()){
             // http:www.yanzhenjie.com?name=1234
-            if (paramsStr.length() > 0 && url.contains("?") && url.contains("="))
+            if (paramsStr.length() > 0 && url.contains("?") && url.contains("=")) {
                 urlBuilder.append("&");
-            // http:www.yanzhenjie.com?
-            else if (paramsStr.length() > 0 && url.endsWith("?"))
+                // http:www.yanzhenjie.com?
+            }
+            else if (paramsStr.length() > 0 && !url.endsWith("?")) {
                 urlBuilder.append("?");
+            }
             urlBuilder.append(paramsStr);
         }
         return urlBuilder.toString();
@@ -140,7 +142,7 @@ public class Request {
      * 拿到请求头
      * @return
      */
-    Map<String, String> getmRequestHeader(){
+    Map<String, String> getRequestHeader(){
         return mRequestHead;
     }
 
@@ -156,17 +158,18 @@ public class Request {
         mCharSet = charset;
     }
 
-    public String get1ContentType(){
+    public String getContentType(){
         if (!TextUtils.isEmpty(mContentType))
             // 返回表单特殊contentType
             return mContentType;
-        else if(enableFormData || hasFile()) // 是否强制表单提交, 是否有文件(文件只能通过模拟表单和body提交)
-        /**
-         *  Content-Type:multipart/form-data; boundary=--d1sajoapidfgl
-         *  -----------------------------------------
-         *
-         */
+        else if(enableFormData || hasFile()) {// 是否强制表单提交, 是否有文件(文件只能通过模拟表单和body提交)
+            /**
+             *  Content-Type:multipart/form-data; boundary=--d1sajoapidfgl
+             *  -----------------------------------------
+             *
+             */
             return "multipart/form-data; boundary=" + boundary; // 提交表单特殊contentType
+        }
         // 如果用户没有设置,并且没有文件, 则视为一般性的提交
         return "application/x-www-form-urlencoded";
     }
@@ -195,7 +198,7 @@ public class Request {
         CounterOutputStream counterOutputStream = new CounterOutputStream();
         try {
             onWriteBody(counterOutputStream);
-        } catch (IOException e) {
+        } catch (Exception e) {
             return 0;
         }
         return counterOutputStream.get();
@@ -235,9 +238,9 @@ public class Request {
                 writeFormFileData(outputStream, key, (File)value);
             else
                 writeFormStringData(outputStream, key, (String)value);
-            outputStream.write("\r\n".getBytes());
+            outputStream.write("\r\n".getBytes(mCharSet));
         }
-        outputStream.write(endBoundary.getBytes());
+        outputStream.write(endBoundary.getBytes(mCharSet));
     }
 
     /**
@@ -303,7 +306,7 @@ public class Request {
     }
 
     protected String createBoundary(){
-        return "--htmboy" + UUID.randomUUID();
+        return "Imooc" + UUID.randomUUID();
     }
 
     /**

@@ -2,6 +2,7 @@ package com.aooled_laptop.httpupload.task;
 
 import android.util.Log;
 
+import com.aooled_laptop.httpupload.util.Constants;
 import com.aooled_laptop.httpupload.util.Logger;
 
 import java.io.ByteArrayOutputStream;
@@ -41,6 +42,7 @@ public class RequestTask implements Runnable {
         OutputStream outputStream = null;
         try {
             URL url = new URL(urlStr);
+
             /**
              * https的处理
              */
@@ -58,7 +60,6 @@ public class RequestTask implements Runnable {
             urlConnection.setRequestMethod(method.value());
             urlConnection.setDoInput(true);
             urlConnection.setDoOutput(method.isOutputMethod());
-
             setHeader(urlConnection, mRequest);
 
             // 发送数据
@@ -86,12 +87,19 @@ public class RequestTask implements Runnable {
             }else
                 Logger.i("没有响应包体!");
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             exception = e;
         }finally {
             if (urlConnection != null)
                 urlConnection.disconnect();
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         // TODO ...执行请求
         Response response = new Response(mRequest, responseCode, responseHeaders, responseBody, exception);
@@ -111,7 +119,7 @@ public class RequestTask implements Runnable {
         // http://www.w3school.com.cn/tags/html_ref_httpmessages.asp
         // head 请求没有包体的
         return method != RequestMethod.HEAD && !(100 <= responseCode && responseCode <200)
-                && responseCode != 201 && responseCode != 205 && !(300 <= responseCode && responseCode < 400);
+                && responseCode != 204 && responseCode != 205 && !(300 <= responseCode && responseCode < 400);
     }
 
     /**
@@ -121,7 +129,7 @@ public class RequestTask implements Runnable {
      */
     private InputStream getInputStream(HttpURLConnection urlConnection, int responseCode) throws IOException {
         InputStream inputStream;
-        if(responseCode <= 400)
+        if(responseCode >= 400)
             inputStream = urlConnection.getErrorStream();
         else
             inputStream = urlConnection.getInputStream();
@@ -137,9 +145,9 @@ public class RequestTask implements Runnable {
      * @param request
      */
     private void setHeader(HttpURLConnection urlConnection, Request request){
-        Map<String, String> requestHeader = request.getmRequestHeader();
+        Map<String, String> requestHeader = request.getRequestHeader();
         // 处理contentType
-        String contentType = request.get1ContentType();
+        String contentType = request.getContentType();
         requestHeader.put("Content-Type", contentType);
         // 处理contentlength
         long contentLength = request.getContentLength();

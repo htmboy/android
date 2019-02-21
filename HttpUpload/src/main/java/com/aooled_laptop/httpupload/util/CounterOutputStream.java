@@ -26,14 +26,22 @@ public class CounterOutputStream extends OutputStream {
 
     @Override
     public void write(byte[] b) throws IOException {
-        super.write(b);
         mAtomicLong.addAndGet(b.length);
     }
 
     @Override
     public void write(byte[] b, int off, int len) throws IOException {
-        super.write(b, off, len);
+//        super.write(b, off, len);
         mAtomicLong.addAndGet(len);
     }
+
+    @Override
+    public void flush() throws IOException {
+    }
+
+    @Override
+    public void close() throws IOException {
+    }
+
 
 }
