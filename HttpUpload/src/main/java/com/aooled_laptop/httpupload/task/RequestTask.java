@@ -41,7 +41,7 @@ public class RequestTask<T> implements Runnable {
     @Override
     public void run() {
         Exception exception = null;
-        int responseCode = -1;
+        int responseCode = 200;
         Map<String, List<String>> responseHeaders = null;
         byte[] responseBody = null;
         Logger.i("执行请求: " + mRequest.toString());
@@ -71,18 +71,19 @@ public class RequestTask<T> implements Runnable {
             }
             // 设置基础信息, 即请求头
             urlConnection.setRequestMethod(method.value());
-            urlConnection.setDoInput(true);
-            urlConnection.setDoOutput(method.isOutputMethod());
-            setHeader(urlConnection, mRequest);
-            Logger.i("1");
+
             // 发送数据
             if (method.isOutputMethod()){
+                urlConnection.setDoInput(true);
+                urlConnection.setDoOutput(method.isOutputMethod());
+                setHeader(urlConnection, mRequest);
                 outputStream = urlConnection.getOutputStream();
                 mRequest.onWriteBody(outputStream);
             }
 
             // 读取响应
             responseCode = urlConnection.getResponseCode();
+
             Logger.i("ResponseCode: " + responseCode);
             responseHeaders = urlConnection.getHeaderFields();
             if (hasResponseBody(method, responseCode)) {
@@ -107,8 +108,8 @@ public class RequestTask<T> implements Runnable {
             exception = new URLError("The url is error.");
         } catch (UnknownHostException e){
             exception = new UnknowHostError("The server is not found.");
-        } catch (IOException e) {
-
+        } catch (Exception e) {
+            e.printStackTrace();
             exception = e;
         }finally {
             if (urlConnection != null)

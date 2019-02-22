@@ -249,43 +249,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
     }
-    private void executePost() {
-        HttpURLConnection urlConnection = null;
-        InputStream inputStream = null;
-        try {
-            URL url = new URL(Constants.URL_UPLOAD);
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("POST");
-
-            urlConnection.connect();
-
-            // post 有输出流
-            OutputStream outputStream = urlConnection.getOutputStream();
-
-            String iLikeYou = "i like you.";
-
-            outputStream.write(iLikeYou.getBytes());
-
-            int responserCode = urlConnection.getResponseCode();
-            if (responserCode == 200){
-                inputStream = urlConnection.getInputStream();
-                readServerData(inputStream);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally{
-            if (urlConnection != null)
-                urlConnection.disconnect();
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-    }
+//    private void executePost() {
+//        HttpURLConnection urlConnection = null;
+//        InputStream inputStream = null;
+//        try {
+//            URL url = new URL(Constants.URL_UPLOAD);
+//            urlConnection = (HttpURLConnection) url.openConnection();
+//            urlConnection.setRequestMethod("POST");
+//
+//            urlConnection.connect();
+//
+//            // post 有输出流
+//            OutputStream outputStream = urlConnection.getOutputStream();
+//
+//            String iLikeYou = "i like you.";
+//
+//            outputStream.write(iLikeYou.getBytes());
+//
+//            int responserCode = urlConnection.getResponseCode();
+//            if (responserCode == 200){
+//                inputStream = urlConnection.getInputStream();
+//                readServerData(inputStream);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }finally{
+//            if (urlConnection != null)
+//                urlConnection.disconnect();
+//            if (inputStream != null) {
+//                try {
+//                    inputStream.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//        }
+//    }
 
     /**
      * 读取数据信息

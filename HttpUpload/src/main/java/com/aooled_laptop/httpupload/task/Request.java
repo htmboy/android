@@ -238,9 +238,9 @@ public abstract class Request<T> {
                 writeFormFileData(outputStream, key, (File)value);
             else
                 writeFormStringData(outputStream, key, (String)value);
-            outputStream.write("\r\n".getBytes(mCharSet));
+            outputStream.write("\r\n".getBytes());
         }
-        outputStream.write(endBoundary.getBytes(mCharSet));
+        outputStream.write(endBoundary.getBytes());
     }
 
     /**
@@ -288,7 +288,7 @@ public abstract class Request<T> {
                 "Content-Type: text/plain; charset=\"" + mCharSet + "\"" + "\r\n" +
                 "\r\n\r\n" +
                 value;
-        outputStream.write(builder.getBytes(mCharSet));
+        outputStream.write(builder.getBytes());
     }
 
     /**
