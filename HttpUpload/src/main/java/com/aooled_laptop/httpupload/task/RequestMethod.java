@@ -20,7 +20,6 @@ public enum RequestMethod {
     public boolean isOutputMethod(){
         switch(this){
             case POST:
-            case DELETE:
                 return true;
             default:
                 return false;

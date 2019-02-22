@@ -5,11 +5,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.aooled_laptop.httpupload.error.ParseError;
+import com.aooled_laptop.httpupload.error.TimeoutError;
+import com.aooled_laptop.httpupload.error.URLError;
+import com.aooled_laptop.httpupload.error.UnknowHostError;
 import com.aooled_laptop.httpupload.task.HttpListener;
 import com.aooled_laptop.httpupload.task.Request;
 import com.aooled_laptop.httpupload.task.RequestExecutor;
 import com.aooled_laptop.httpupload.task.RequestMethod;
 import com.aooled_laptop.httpupload.task.Response;
+import com.aooled_laptop.httpupload.task.StringRequest;
 import com.aooled_laptop.httpupload.util.Constants;
 import com.aooled_laptop.httpupload.util.Logger;
 import com.aooled_laptop.httpupload.util.ThreadUtils;
@@ -45,28 +50,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 异步执行get请求
      */
     private void requestGet(){
-        String rootPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        File file = new File(rootPath + "/image/01.jpg");
-        File file2 = new File(rootPath + "/image/02.jpg");
-        File file3 = new File(rootPath + "/image/03.jpg");
-        File file4 = new File(rootPath + "/image/04.jpg");
-        Request request = new Request(Constants.URL_UPLOAD, RequestMethod.POST);
+        Request<String> request = new StringRequest(Constants.URL_UPLOAD);
         request.add("username", "htmboy");
         request.add("password", "123456");
-        request.add("image", file);
+        // 执行器 使用枚举
+        RequestExecutor.INTANCE.execute(request, new HttpListener<String>() {
 
-        RequestExecutor.INTANCE.execute(request, new HttpListener() {
             @Override
-            public void onSucceed(Response response) {
+            public void onSucceed(Response<String> response) {
                 Logger.i("Activity 接受到的响应码:" + response.getResponseCode());
-                byte[] responseBody = response.getResponseBody();
-                String str = new String(responseBody);
+
+                String str = response.get();
                 Logger.i("Activity 接受到的结果:" + str);
             }
 
             @Override
             public void onFailed(Exception e) {
-                Logger.i("请求失败: " + e.getMessage());
+                if (e instanceof ParseError){
+                    // 数据解析异常
+                    Logger.d("数据解析异常");
+                }else if (e instanceof TimeoutError){
+                    // 超时
+                    Logger.d("超时");
+                }else if (e instanceof UnknowHostError){
+                    // 没有找到服务器
+                    Logger.d("没有找到服务器");
+                }else if (e instanceof URLError){
+                    // URL格式错误
+                    Logger.d("URL格式错误");
+                }
+
             }
         });
     }
@@ -78,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ThreadUtils.execute(new Runnable() {
             @Override
             public void run() {
-                executeGet();
+                requestGet();
             }
         });
     }
@@ -182,13 +195,57 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
+     * 异步执行post请求
+     */
+    private void requestPost(){
+        String rootPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        File file = new File(rootPath + "/image/01.jpg");
+        File file2 = new File(rootPath + "/image/02.jpg");
+        File file3 = new File(rootPath + "/image/03.jpg");
+        File file4 = new File(rootPath + "/image/04.jpg");
+
+        Request<String> request = new StringRequest(Constants.URL_UPLOAD, RequestMethod.POST);
+        request.add("username", "htmboy");
+        request.add("password", "123456");
+        request.add("image", file);
+        request.add("image2", file2);
+        request.add("image3", file3);
+
+        RequestExecutor.INTANCE.execute(request, new HttpListener<String>() {
+
+            @Override
+            public void onSucceed(Response<String> response) {
+                Logger.i("Activity 接受到的响应码:" + response.getResponseCode());
+
+                String str = response.get();
+                Logger.i("Activity 接受到的结果:" + str);
+            }
+
+            @Override
+            public void onFailed(Exception e) {
+                if (e instanceof ParseError){
+                    // 数据解析异常
+                }else if (e instanceof TimeoutError){
+                    // 超时
+
+                }else if (e instanceof UnknowHostError){
+                    // 没有找到服务器
+                }else if (e instanceof URLError){
+                    // URL格式错误
+                }
+
+            }
+        });
+    }
+
+    /**
      * post请求
      */
     private void postRequest(){
         ThreadUtils.execute(new Runnable() {
             @Override
             public void run() {
-                executePost();
+                requestPost();
             }
         });
     }
@@ -252,8 +309,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_get:{
-                requestGet();
-//                getRequest();
+                getRequest();
                 break;
             }
             case R.id.btn_head:{

@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 public enum RequestExecutor {
     // enum 枚举, 全局单例
     INTANCE;
+    // 线程池
     private ExecutorService mExecutorService;
     RequestExecutor(){
         mExecutorService = Executors.newSingleThreadExecutor();
@@ -18,6 +19,7 @@ public enum RequestExecutor {
      */
     public void execute(Request request, HttpListener httpListener){
 
+        // 执行请求和请求监听
         mExecutorService.execute(new RequestTask(request, httpListener));
     }
 

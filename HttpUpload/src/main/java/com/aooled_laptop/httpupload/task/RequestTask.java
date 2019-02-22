@@ -2,6 +2,10 @@ package com.aooled_laptop.httpupload.task;
 
 import android.util.Log;
 
+import com.aooled_laptop.httpupload.error.ParseError;
+import com.aooled_laptop.httpupload.error.TimeoutError;
+import com.aooled_laptop.httpupload.error.URLError;
+import com.aooled_laptop.httpupload.error.UnknowHostError;
 import com.aooled_laptop.httpupload.util.Constants;
 import com.aooled_laptop.httpupload.util.Logger;
 
@@ -10,25 +14,32 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.net.UnknownHostException;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeoutException;
 import java.util.zip.GZIPInputStream;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 
-public class RequestTask implements Runnable {
-    private Request mRequest;
-    private HttpListener httpListener;
-    public RequestTask(Request request, HttpListener httpListener){
+public class RequestTask<T> implements Runnable {
+
+    private Request<T> mRequest;
+    private HttpListener<T> httpListener;
+
+    public RequestTask(Request<T> request, HttpListener<T> httpListener){
         this.mRequest = request;
         this.httpListener = httpListener;
     }
     @Override
     public void run() {
-
         Exception exception = null;
         int responseCode = -1;
         Map<String, List<String>> responseHeaders = null;
@@ -38,6 +49,7 @@ public class RequestTask implements Runnable {
         RequestMethod method = mRequest.getMethod();
         Logger.i("url: " + urlStr);
         Logger.i("method: " + method);
+
         HttpURLConnection urlConnection = null;
         OutputStream outputStream = null;
         try {
@@ -47,6 +59,7 @@ public class RequestTask implements Runnable {
              * https的处理
              */
             urlConnection = (HttpURLConnection) url.openConnection();
+
             if (urlConnection instanceof HttpsURLConnection){
                 HttpsURLConnection httpsURLConnection =  ((HttpsURLConnection)urlConnection);
                 SSLSocketFactory sslSocketFactory = mRequest.getSslSocketFactory();
@@ -61,7 +74,7 @@ public class RequestTask implements Runnable {
             urlConnection.setDoInput(true);
             urlConnection.setDoOutput(method.isOutputMethod());
             setHeader(urlConnection, mRequest);
-
+            Logger.i("1");
             // 发送数据
             if (method.isOutputMethod()){
                 outputStream = urlConnection.getOutputStream();
@@ -84,11 +97,18 @@ public class RequestTask implements Runnable {
 
                 arrayOutputStream.close();
                 responseBody = arrayOutputStream.toByteArray();
+                //Logger.i(new String(responseBody));
             }else
                 Logger.i("没有响应包体!");
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SocketTimeoutException e){
+            exception = new TimeoutError("Timeout.");
+        } catch (MalformedURLException e){
+            exception = new URLError("The url is error.");
+        } catch (UnknownHostException e){
+            exception = new UnknowHostError("The server is not found.");
+        } catch (IOException e) {
+
             exception = e;
         }finally {
             if (urlConnection != null)
@@ -96,16 +116,23 @@ public class RequestTask implements Runnable {
             if (outputStream != null) {
                 try {
                     outputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    exception = e;
                 }
             }
         }
-        // TODO ...执行请求
-        Response response = new Response(mRequest, responseCode, responseHeaders, responseBody, exception);
+        // 解析服务器的数据
+        T t = null;
+        try {
+            t = mRequest.parseResponse(responseBody);
+        } catch (Exception throwable) {
+            exception = new ParseError("The data parse error.");
+        }
+
+        Response<T> response = new Response<>(mRequest, responseCode, responseHeaders, exception);
+        response.setResponseResult(t);
         // 发送响应数据到主线程
         Message message = new Message(response, httpListener);
-
         Poster.getInstance().post(message);
     }
 

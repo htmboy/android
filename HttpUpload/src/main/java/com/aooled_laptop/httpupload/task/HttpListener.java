@@ -1,11 +1,11 @@
 package com.aooled_laptop.httpupload.task;
 
-public interface HttpListener {
+public interface HttpListener<T> {
     /**
      * 请求成功
      * @param response 响应数据
      */
-    void onSucceed(Response response);
+    void onSucceed(Response<T> response);
 
     /**
      * 请求失败

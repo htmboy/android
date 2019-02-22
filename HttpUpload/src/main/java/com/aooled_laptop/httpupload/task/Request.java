@@ -21,7 +21,7 @@ import java.util.UUID;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 
-public class Request {
+public abstract class Request<T> {
 
     private String boundary = createBoundary();
     private String startBoundary = "--" + boundary;
@@ -333,6 +333,14 @@ public class Request {
             builder.deleteCharAt(0);
         return builder.toString();
     }
+
+    /**
+     * 解析服务器的数据
+     * @param responseBody
+     * @return
+     */
+    public abstract T parseResponse(byte[] responseBody) throws Exception;
+
     public String toString(){
         return "url:" + url + "; method: " + method + "; params: " + mKeyValues.toString();
     }

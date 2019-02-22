@@ -1,0 +1,23 @@
+package com.aooled_laptop.httpupload.task;
+
+import org.json.JSONObject;
+
+public class FastJsonRequest extends Request<JSONObject> {
+    public FastJsonRequest(String url) {
+        this(url, RequestMethod.GET);
+    }
+
+    public FastJsonRequest(String url, RequestMethod method) {
+        super(url, method);
+    }
+
+    @Override
+    public JSONObject parseResponse(byte[] responseBody) throws Exception{
+        String result = StringRequest.parseResponseString(responseBody);
+        if (result.length() >= 2){
+            // json 处理
+            return null; // 返回JSONObject
+        }
+        return null;// 返回空的一个JSONObject
+    }
+}
