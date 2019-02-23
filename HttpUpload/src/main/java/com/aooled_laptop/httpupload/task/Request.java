@@ -96,7 +96,7 @@ public abstract class Request<T> {
         mKeyValues.add(new KeyValue(key, value));
     }
 
-    public void add(String key, File value){
+    public void add(String key, Binary value){
 
         mKeyValues.add(new KeyValue(key, value));
     }
@@ -181,7 +181,7 @@ public abstract class Request<T> {
     protected boolean hasFile(){
         for (KeyValue keyValue : mKeyValues){
             Object value = keyValue.getValue();
-            if (value instanceof File)
+            if (value instanceof Binary)
                 return true;
         }
         return false;
@@ -234,8 +234,8 @@ public abstract class Request<T> {
         for (KeyValue mKeyValue : mKeyValues){
             String key = mKeyValue.getKey();
             Object value = mKeyValue.getValue();
-            if(value instanceof File)
-                writeFormFileData(outputStream, key, (File)value);
+            if(value instanceof Binary)
+                writeFormFileData(outputStream, key, (Binary) value);
             else
                 writeFormStringData(outputStream, key, (String)value);
             outputStream.write("\r\n".getBytes());
@@ -249,29 +249,19 @@ public abstract class Request<T> {
      * @param key
      * @param value
      */
-    private void writeFormFileData(OutputStream outputStream, String key, File value) throws IOException {
-        String fileName = value.getName();
-        String mimeType = "application/octet-stream";
-        if(MimeTypeMap.getSingleton().hasExtension(fileName)){
-            String extension = MimeTypeMap.getFileExtensionFromUrl(fileName);
-            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-        }
+    private void writeFormFileData(OutputStream outputStream, String key, Binary value) throws IOException {
+
         String builder = startBoundary + "\r\n" +
                 "Content-Disposition: form-data; name=\"" + key + "\"; filename=\"" +
-                fileName + "\"" + "\r\n" +
-                "Content-Type: " + mimeType +
+                value.getFileName() + "\"" + "\r\n" +
+                "Content-Type: " + value.getMimeType() +
                 "\r\n\r\n";
         outputStream.write(builder.getBytes(mCharSet));
 
         if (outputStream instanceof CounterOutputStream) {
-            ((CounterOutputStream)outputStream).write(value.length());
+            ((CounterOutputStream)outputStream).write(value.getBinaryLength());
         } else {
-            InputStream inputStream = new FileInputStream(value);
-            byte[] buffer = new byte[2048];
-            int len;
-            while ((len = inputStream.read(buffer)) != -1){
-                outputStream.write(buffer, 0, len);
-            }
+            value.onWriteBinary(outputStream);
         }
 
     }

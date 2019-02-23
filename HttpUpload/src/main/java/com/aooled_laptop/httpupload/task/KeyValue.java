@@ -11,7 +11,7 @@ public class KeyValue {
         this.value = value;
     }
 
-    public KeyValue(String key, File value) {
+    public KeyValue(String key, Binary value) {
         this.key = key;
         this.value = value;
     }

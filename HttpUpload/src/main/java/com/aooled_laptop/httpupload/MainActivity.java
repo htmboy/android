@@ -4,12 +4,16 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import com.aooled_laptop.httpupload.error.ParseError;
 import com.aooled_laptop.httpupload.error.TimeoutError;
 import com.aooled_laptop.httpupload.error.URLError;
 import com.aooled_laptop.httpupload.error.UnknowHostError;
+import com.aooled_laptop.httpupload.task.FileBinary;
 import com.aooled_laptop.httpupload.task.HttpListener;
+import com.aooled_laptop.httpupload.task.InputStreamBinary;
+import com.aooled_laptop.httpupload.task.OnBinaryProgressListener;
 import com.aooled_laptop.httpupload.task.Request;
 import com.aooled_laptop.httpupload.task.RequestExecutor;
 import com.aooled_laptop.httpupload.task.RequestMethod;
@@ -21,6 +25,8 @@ import com.aooled_laptop.httpupload.util.ThreadUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -33,6 +39,7 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private TextView tv1, tv2, tv3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +48,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        setSupportActionBar(toolbar);
 
         findViewById(R.id.btn_get).setOnClickListener(this);
-        findViewById(R.id.btn_head).setOnClickListener(this);
         findViewById(R.id.btn_post).setOnClickListener(this);
+
+        tv1 = findViewById(R.id.tv1);
+        tv2 = findViewById(R.id.tv2);
+        tv3 = findViewById(R.id.tv3);
 
     }
 
@@ -84,115 +94,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    /**
-     * get请求
-     */
-    private void getRequest(){
-        ThreadUtils.execute(new Runnable() {
-            @Override
-            public void run() {
-                requestGet();
-            }
-        });
-    }
-    // 执行get请求, 此方法在子线程中执行
-    private void executeGet(){
-        // 我们暂时使用URLConection来执行网络请求
-        HttpURLConnection urlConnection = null;
-        InputStream inputStream = null;
-        // 1, 建立连接
-        try {
-            URL url = new URL(Constants.URL_UPLOAD);
-            urlConnection = (HttpURLConnection) url.openConnection();
-//            if (urlConnection instanceof HttpsURLConnection){
-//            ((HttpsURLConnection)httpURLConnection).setSSLSocketFactory();
-//            ((HttpsURLConnection)httpURLConnection).setHostnameVerifier();
-//             }
-             urlConnection.setRequestMethod("GET"); // 默认是get
-//              urlConnection.setRequestProperty(, );
-                // get方法 不能 获取 输出流 getOutputStream
-                // 2, 连接数据
-                urlConnection.connect();
-                // 3, 拿到响应
-                int responserCode = urlConnection.getResponseCode();
-                if (responserCode == 200){
-                    inputStream = urlConnection.getInputStream();
-                    readServerData(inputStream);
-                }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally{
-            if (urlConnection != null)
-                urlConnection.disconnect();
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-
-//
-
-    }
-
-
-    /**
-     * head请求
-     */
-    private void headRequest(){
-        ThreadUtils.execute(new Runnable() {
-            @Override
-            public void run() {
-                executeHead();
-            }
-        });
-    }
-    private void executeHead(){
-        HttpURLConnection urlConnection = null;
-        InputStream inputStream = null;
-        // 1, 建立连接
-        try {
-            URL url = new URL(Constants.URL_UPLOAD);
-            urlConnection = (HttpURLConnection) url.openConnection();
-            // head服务器只能发送响应头, 不能发送body, 客户端也读不到body
-            urlConnection.setRequestMethod("HEAD");
-
-            // 2, 连接数据
-            urlConnection.connect();
-            // 3, 拿到响应
-            int responserCode = urlConnection.getResponseCode();
-            if (responserCode == 200){
-                // 获取响应头
-                Map<String, List<String>> stringListMap = urlConnection.getHeaderFields();
-                Set<Map.Entry<String, List<String>>> entries = stringListMap.entrySet();
-                for(Map.Entry<String, List<String>> entry : entries){
-                    String headKey = entry.getKey();
-                    List<String> headValues = entry.getValue();
-                    for (String HeadValue : headValues){
-                        Logger.i(headKey + " => " + HeadValue);
-                    }
-                }
-                inputStream = urlConnection.getInputStream();
-                readServerData(inputStream);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally{
-            if (urlConnection != null)
-                urlConnection.disconnect();
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-    }
 
     /**
      * 异步执行post请求
@@ -207,9 +108,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Request<String> request = new StringRequest(Constants.URL_UPLOAD, RequestMethod.POST);
         request.add("username", "htmboy");
         request.add("password", "123456");
-        request.add("image", file);
-        request.add("image2", file2);
-        request.add("image3", file3);
+        FileBinary fileBinary = new FileBinary(file);
+        fileBinary.setProgressListener(1, onBinaryProgressListener);
+        request.add("image", fileBinary);
+        FileBinary fileBinary2 = new FileBinary(file2);
+        fileBinary2.setProgressListener(2,onBinaryProgressListener );
+        request.add("image2", fileBinary2);
+        FileBinary fileBinary3 = new FileBinary(file3);
+        fileBinary3.setProgressListener(3,onBinaryProgressListener );
+        request.add("image3", fileBinary3);
+
+//        try {
+//            request.add("image3", new InputStreamBinary(new FileInputStream(file3),"ban.jpg", "image/jpeg"));
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
 
         RequestExecutor.INTANCE.execute(request, new HttpListener<String>() {
 
@@ -238,6 +151,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    private OnBinaryProgressListener onBinaryProgressListener = new OnBinaryProgressListener() {
+        @Override
+        public void onProgress(int what, int progress) {
+            if (what == 1)
+                tv1.setText("文件1, 进度: " + progress);
+            if (what == 2)
+                tv2.setText("文件2, 进度: " + progress);
+            if (what == 3)
+                tv3.setText("文件3, 进度: " + progress);
+        }
+
+        @Override
+        public void onError(int what) {
+
+        }
+    };
+
     /**
      * post请求
      */
@@ -249,43 +179,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
     }
-//    private void executePost() {
-//        HttpURLConnection urlConnection = null;
-//        InputStream inputStream = null;
-//        try {
-//            URL url = new URL(Constants.URL_UPLOAD);
-//            urlConnection = (HttpURLConnection) url.openConnection();
-//            urlConnection.setRequestMethod("POST");
-//
-//            urlConnection.connect();
-//
-//            // post 有输出流
-//            OutputStream outputStream = urlConnection.getOutputStream();
-//
-//            String iLikeYou = "i like you.";
-//
-//            outputStream.write(iLikeYou.getBytes());
-//
-//            int responserCode = urlConnection.getResponseCode();
-//            if (responserCode == 200){
-//                inputStream = urlConnection.getInputStream();
-//                readServerData(inputStream);
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }finally{
-//            if (urlConnection != null)
-//                urlConnection.disconnect();
-//            if (inputStream != null) {
-//                try {
-//                    inputStream.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//        }
-//    }
+    /**
+     * get请求
+     */
+    private void getRequest(){
+        ThreadUtils.execute(new Runnable() {
+            @Override
+            public void run() {
+                requestGet();
+            }
+        });
+    }
+    // 执行get请求, 此方法在子线程中执行
 
     /**
      * 读取数据信息
@@ -310,10 +215,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()){
             case R.id.btn_get:{
                 getRequest();
-                break;
-            }
-            case R.id.btn_head:{
-                headRequest();
                 break;
             }
             case R.id.btn_post:{
