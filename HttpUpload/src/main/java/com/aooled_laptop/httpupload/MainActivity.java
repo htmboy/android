@@ -1,5 +1,6 @@
 package com.aooled_laptop.httpupload;
 
+import android.content.Intent;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         findViewById(R.id.btn_get).setOnClickListener(this);
         findViewById(R.id.btn_post).setOnClickListener(this);
+        findViewById(R.id.btn_demo).setOnClickListener(this);
 
         tv1 = findViewById(R.id.tv1);
         tv2 = findViewById(R.id.tv2);
@@ -99,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 异步执行post请求
      */
     private void requestPost(){
-        String rootPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        String rootPath = Environment.getExternalStorageDirectory().getPath();
         File file = new File(rootPath + "/image/01.jpg");
         File file2 = new File(rootPath + "/image/02.jpg");
         File file3 = new File(rootPath + "/image/03.jpg");
@@ -221,6 +223,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 postRequest();
                 break;
             }
+            case R.id.btn_demo:
+                startActivity(new Intent(this, AlbumUploadActivity.class));
+                break;
             default:
                 break;
         }
