@@ -11,7 +11,7 @@ import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
-public class FragmentActivity extends android.support.v4.app.FragmentActivity implements View.OnClickListener {
+public class FragmentActivity extends AppCompatActivity implements View.OnClickListener {
 
     private LinearLayout mTabWeixin;
     private LinearLayout mTabFrd;
