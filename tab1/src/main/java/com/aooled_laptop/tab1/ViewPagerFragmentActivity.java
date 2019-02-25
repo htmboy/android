@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class ViewPagerFragmentActivity extends android.support.v4.app.FragmentActivity implements View.OnClickListener {
     private ViewPager mViewPager;
-    private FragmentStatePagerAdapter mAdapter;
+    private FragmentPagerAdapter mAdapter;
     private List<Fragment> mFragments;
 
     private LinearLayout mTabWeixin;
@@ -34,10 +34,10 @@ public class ViewPagerFragmentActivity extends android.support.v4.app.FragmentAc
     private ImageButton mImgAddress;
     private ImageButton mImgSettings;
 
-//    private Fragment mTab01;
-//    private Fragment mTab02;
-//    private Fragment mTab03;
-//    private Fragment mTab04;
+    private Fragment mTab01;
+    private Fragment mTab02;
+    private Fragment mTab03;
+    private Fragment mTab04;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,28 +64,16 @@ public class ViewPagerFragmentActivity extends android.support.v4.app.FragmentAc
 
         mFragments = new ArrayList<>();
 
-        Fragment mTab01 = new WeixinFragment();
-        Fragment mTab02 = new FrdFragment();
-        Fragment mTab03 = new AddressFragment();
-        Fragment mTab04 = new SettingFragment();
+        mTab01 = new WeixinFragment();
+        mTab02 = new FrdFragment();
+        mTab03 = new AddressFragment();
+        mTab04 = new SettingFragment();
 
         mFragments.add(mTab01);
         mFragments.add(mTab02);
         mFragments.add(mTab03);
         mFragments.add(mTab04);
-        mAdapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
-            @Override
-            public Fragment getItem(int i) {
-                return mFragments.get(i);
-            }
-
-            @Override
-            public int getCount() {
-                return mFragments.size();
-            }
-        };
-
-//        mAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
+//        mAdapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
 //            @Override
 //            public Fragment getItem(int i) {
 //                return mFragments.get(i);
@@ -96,6 +84,18 @@ public class ViewPagerFragmentActivity extends android.support.v4.app.FragmentAc
 //                return mFragments.size();
 //            }
 //        };
+
+        mAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
+            @Override
+            public Fragment getItem(int i) {
+                return mFragments.get(i);
+            }
+
+            @Override
+            public int getCount() {
+                return mFragments.size();
+            }
+        };
         mViewPager.setAdapter(mAdapter);
     }
 //
