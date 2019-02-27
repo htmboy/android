@@ -20,6 +20,7 @@
             <option value="$PROJECT_DIR$/listViewHeader" />
             <option value="$PROJECT_DIR$/sqliteAdapter" />
             <option value="$PROJECT_DIR$/tab1" />
+            <option value="$PROJECT_DIR$/tofragment" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
