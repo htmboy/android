@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -35,9 +37,12 @@ public class ScrollViewActivity extends AppCompatActivity {
             @Override
             public void onScrollChange(int top, int oldTop) {
                 if (top > oldTop){
-
+//                    Animation anim = AnimationUtils.loadAnimation(ScrollViewActivity.this, R.anim.show);
+//                    llAni.setVisibility(View.VISIBlE);
+//                    llAnim.startAnimation(anim);
+                    llAnim.setVisibility(View.VISIBLE);
                 }else{
-
+                    llAnim.setVisibility(View.INVISIBLE);
                 }
             }
         });
