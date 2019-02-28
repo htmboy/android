@@ -85,17 +85,7 @@ public class ViewPagerFragmentActivity extends android.support.v4.app.FragmentAc
 //            }
 //        };
 
-        mAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
-            @Override
-            public Fragment getItem(int i) {
-                return mFragments.get(i);
-            }
-
-            @Override
-            public int getCount() {
-                return mFragments.size();
-            }
-        };
+        mAdapter = new ViewPagerAdapter(getSupportFragmentManager(), mFragments);
         mViewPager.setAdapter(mAdapter);
     }
 //

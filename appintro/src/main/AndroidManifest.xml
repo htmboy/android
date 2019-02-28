@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.aooled_laptop.tab1">
+    package="com.aooled_laptop.appintro">
 
     <application
         android:allowBackup="true"
@@ -9,15 +9,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ViewPagerFragmentActivity">
+        <activity android:name=".splash.SplashActivity">
+
+        </activity>
+        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".viewflipper.ViewFilpperActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
-        <activity android:name=".FragmentActivity"/>
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".scrollview.ScrollViewActivity">
+
+
+        </activity>
     </application>
 
 </manifest>
