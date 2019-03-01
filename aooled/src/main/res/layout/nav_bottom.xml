@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <RadioButton
+            android:id="@+id/person"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@null"
+            android:text="@string/person"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:drawableTop="@mipmap/account96px"
+            android:drawablePadding="5dp"
+            android:padding="5dp"
+            android:layout_weight="1"/>
+        <RadioButton
+            android:id="@+id/orderlist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@null"
+            android:text="@string/orderlist"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:drawableTop="@mipmap/detail96px"
+            android:drawablePadding="5dp"
+            android:padding="5dp"
+            android:layout_weight="1"/>
+        <RadioButton
+            android:id="@+id/contact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@null"
+            android:text="@string/contact"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:drawableTop="@mipmap/email72px"
+            android:drawablePadding="5dp"
+            android:padding="5dp"
+            android:layout_weight="1"/>
+        <RadioButton
+            android:id="@+id/set"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@null"
+            android:text="@string/set"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:drawableTop="@mipmap/settings96px"
+            android:drawablePadding="5dp"
+            android:padding="5dp"
+            android:layout_weight="1"/>
+    </RadioGroup>
+</android.support.constraint.ConstraintLayout>

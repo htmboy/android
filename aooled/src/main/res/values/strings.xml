@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="person">个人战绩</string>
+    <string name="orderlist">订单列表</string>
+    <string name="contact">通讯录</string>
+    <string name="set">设置</string>
+</resources>

@@ -1,1 +1,1 @@
-include ':app', ':baseAdapter', ':asyncTask', ':asyncTaskIntro', ':sqliteAdapter', ':listViewHeader', ':httpUrl', ':HttpUpload', ':handler_01', ':intent', ':tab1', ':fragment', ':tofragment', ':appintro'
+include ':app', ':baseAdapter', ':asyncTask', ':asyncTaskIntro', ':sqliteAdapter', ':listViewHeader', ':httpUrl', ':HttpUpload', ':handler_01', ':intent', ':tab1', ':fragment', ':tofragment', ':appintro', ':aooled'
