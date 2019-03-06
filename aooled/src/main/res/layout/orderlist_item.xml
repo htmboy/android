@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/order_item"
+        android:layout_weight="1"
+        android:padding="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/orderNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="2018032101kxg1" />
+        <TextView
+            android:id="@+id/contractAmount"
+            android:text="4500"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/orderStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="发货中" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_weight="1"
+        android:padding="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/customerCompany"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="广东澳镭照明电器有限公司" />
+        <TextView
+            android:id="@+id/contact"
+            android:layout_width="match_parent"
+            android:text="李剑锋"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/contactTel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="15899555540" />
+    </LinearLayout>
+
+
+
+</LinearLayout>

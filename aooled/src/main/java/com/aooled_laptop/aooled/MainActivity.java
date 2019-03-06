@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Adapter;
 import android.widget.RadioButton;
 
@@ -23,7 +24,7 @@ import com.aooled_laptop.aooled.fragment.SetFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends FragmentActivity implements OnClickListener {
+public class MainActivity extends AppCompatActivity implements OnClickListener {
     private ViewPager viewPager;
     private PagerAdapter pagerAdapter;
     private RadioButton person, orderlist, contact, set;
@@ -33,6 +34,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         initView();
 
@@ -66,15 +68,20 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
         switch (v.getId()){
             case R.id.person:
+//                person.(R.mipmap.account72px);
+//                person.setBackgroundResource(R.mipmap.account72px);
                 setSelect(0);
                 break;
             case R.id.orderlist:
+//                orderlist.setBackgroundResource(R.mipmap.detail72px);
                 setSelect(1);
                 break;
             case R.id.contact:
+//                contact.setBackgroundResource(R.mipmap.detail64px);
                 setSelect(2);
                 break;
             case R.id.set:
+//                set.setBackgroundResource(R.mipmap.settings72px);
                 setSelect(3);
                 break;
             default:

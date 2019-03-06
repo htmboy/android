@@ -7,11 +7,12 @@
     android:background="@color/colorPrimary"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
+    <TextView
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/chevron42" />
+        android:textStyle="bold"
+        android:text="订单系统" />
 
     <ImageView
         android:id="@+id/add"

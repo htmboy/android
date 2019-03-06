@@ -13,11 +13,12 @@
             android:layout_height="wrap_content"
             android:button="@null"
             android:text="@string/person"
+            android:textSize="10sp"
             android:layout_gravity="center"
             android:gravity="center"
-            android:drawableTop="@mipmap/account96px"
-            android:drawablePadding="5dp"
-            android:padding="5dp"
+            android:drawableTop="@mipmap/account72px"
+            android:drawablePadding="3dp"
+            android:padding="3dp"
             android:layout_weight="1"/>
         <RadioButton
             android:id="@+id/orderlist"
@@ -25,11 +26,12 @@
             android:layout_height="wrap_content"
             android:button="@null"
             android:text="@string/orderlist"
+            android:textSize="10sp"
             android:layout_gravity="center"
             android:gravity="center"
-            android:drawableTop="@mipmap/detail96px"
-            android:drawablePadding="5dp"
-            android:padding="5dp"
+            android:drawableTop="@mipmap/detail72px"
+            android:drawablePadding="3dp"
+            android:padding="3dp"
             android:layout_weight="1"/>
         <RadioButton
             android:id="@+id/contact"
@@ -37,11 +39,12 @@
             android:layout_height="wrap_content"
             android:button="@null"
             android:text="@string/contact"
+            android:textSize="10sp"
             android:layout_gravity="center"
             android:gravity="center"
             android:drawableTop="@mipmap/email72px"
-            android:drawablePadding="5dp"
-            android:padding="5dp"
+            android:drawablePadding="3dp"
+            android:padding="3dp"
             android:layout_weight="1"/>
         <RadioButton
             android:id="@+id/set"
@@ -49,11 +52,12 @@
             android:layout_height="wrap_content"
             android:button="@null"
             android:text="@string/set"
+            android:textSize="10sp"
             android:layout_gravity="center"
             android:gravity="center"
-            android:drawableTop="@mipmap/settings96px"
-            android:drawablePadding="5dp"
-            android:padding="5dp"
+            android:drawableTop="@mipmap/settings72px"
+            android:drawablePadding="3dp"
+            android:padding="3dp"
             android:layout_weight="1"/>
     </RadioGroup>
 </android.support.constraint.ConstraintLayout>
