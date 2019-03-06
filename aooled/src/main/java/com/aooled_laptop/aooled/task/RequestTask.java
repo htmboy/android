@@ -64,7 +64,7 @@ public class RequestTask<T> implements Runnable {
                     httpsURLConnection.setHostnameVerifier(hostnameVerifier); // 服务器主机认证
             }
             // 设置基础信息, 即请求头
-            urlConnection.setRequestMethod(method.value());
+            urlConnection.setRequestMethod(method == RequestMethod.JSON ? RequestMethod.POST.value(): method.value());
 
             // 发送数据
             if (method.isOutputMethod()){

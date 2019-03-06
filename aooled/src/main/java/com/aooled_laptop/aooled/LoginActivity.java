@@ -50,9 +50,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Toast.makeText(this, "用户名或密码不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
-        Request<JSONObject> request = new JsonRequest(Constants.URL_UPLOAD, RequestMethod.POST);
+        Request<String> request = new StringRequest(Constants.URL_UPLOAD, RequestMethod.JSON);
         request.add("username", username);
         request.add("password", password);
+        request.add("code", 1);
         RequestExecutor.INTANCE.execute(request, new HttpListener<String>() {
 
             @Override

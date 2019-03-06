@@ -12,7 +12,7 @@ public class JsonRequest extends Request<JSONObject> {
     public JsonRequest(String url, RequestMethod method) {
 
         super(url, method);
-        setHeader("Accept", "application/json");
+        setHeader("Accept", "*");
     }
 
     @Override

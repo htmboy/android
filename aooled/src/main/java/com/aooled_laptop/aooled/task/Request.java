@@ -1,8 +1,13 @@
 package com.aooled_laptop.aooled.task;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.aooled_laptop.aooled.util.CounterOutputStream;
+import com.aooled_laptop.aooled.util.Logger;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -112,7 +117,8 @@ public abstract class Request<T> {
     public String getUrl() {
         StringBuilder urlBuilder = new StringBuilder(url);
         String paramsStr = buildParamsString();
-        if(!method.isOutputMethod()){
+
+        if(!method.isOutputMethod() && getMethod() != method.JSON){
             // http:www.yanzhenjie.com?name=1234
             if (paramsStr.length() > 0 && url.contains("?") && url.contains("=")) {
                 urlBuilder.append("&");
@@ -158,6 +164,8 @@ public abstract class Request<T> {
         if (!TextUtils.isEmpty(mContentType))
             // 返回表单特殊contentType
             return mContentType;
+//        else if(getMethod() == RequestMethod.JSON)
+//            return "application/json";
         else if(enableFormData || hasFile()) {// 是否强制表单提交, 是否有文件(文件只能通过模拟表单和body提交)
             /**
              *  Content-Type:multipart/form-data; boundary=--d1sajoapidfgl
@@ -218,7 +226,12 @@ public abstract class Request<T> {
      * @param outputStream
      */
     private void writeStringData(OutputStream outputStream) throws IOException {
-        String params = buildParamsString();
+        Logger.i("已执行");
+        String params = "";
+        if (getMethod() == RequestMethod.JSON)
+            params = buildParamsJson();
+        else
+            params = buildParamsString();
         outputStream.write(params.getBytes());
     }
 
@@ -227,13 +240,13 @@ public abstract class Request<T> {
      * @param outputStream
      */
     private void writeFormData(OutputStream outputStream) throws IOException {
-        for (KeyValue mKeyValue : mKeyValues){
+        for (KeyValue mKeyValue : mKeyValues) {
             String key = mKeyValue.getKey();
             Object value = mKeyValue.getValue();
-            if(value instanceof Binary)
+            if (value instanceof Binary)
                 writeFormFileData(outputStream, key, (Binary) value);
             else
-                writeFormStringData(outputStream, key, (String)value);
+                writeFormStringData(outputStream, key, (String) value);
             outputStream.write("\r\n".getBytes());
         }
         outputStream.write(endBoundary.getBytes());
@@ -278,6 +291,21 @@ public abstract class Request<T> {
     }
 
     /**
+     * 写出表单中的string item
+     * @param outputStream
+     * @param value
+     */
+    private void writeFormJsonData(OutputStream outputStream, JSONObject value) throws IOException {
+
+        String builder = startBoundary + "\r\n" +
+//                "Content-Disposition: form-data; name=\"" + key + "\"" + "\r\n" +
+                "Content-Type: text/json; charset=\"" + mCharSet + "\"" + "\r\n" +
+                "\r\n\r\n" +
+                value.toString();
+        outputStream.write(builder.getBytes());
+        Log.i("Json", builder);
+    }
+    /**
      * 是否强制开启表单提交
      * @param enable
      */
@@ -300,24 +328,38 @@ public abstract class Request<T> {
      * @return
      */
     protected String buildParamsString(){
-        StringBuilder builder = new StringBuilder();
-        for(KeyValue mKeyValue : mKeyValues){
-            Object value = mKeyValue.getValue();
-            if(value instanceof String){
-                builder.append("&");
-                try {
-                    builder.append(URLEncoder.encode(mKeyValue.getKey(), mCharSet));
-                    builder.append("=");
-                    builder.append(URLEncoder.encode((String) value, mCharSet));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+            StringBuilder builder = new StringBuilder();
+            for (KeyValue mKeyValue : mKeyValues) {
+                Object value = mKeyValue.getValue();
+                if (value instanceof String) {
+                    builder.append("&");
+                    try {
+                        builder.append(URLEncoder.encode(mKeyValue.getKey(), mCharSet));
+                        builder.append("=");
+                        builder.append(URLEncoder.encode((String) value, mCharSet));
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+            if (builder.length() > 0)
+                builder.deleteCharAt(0);
+            return builder.toString();
 
+    }
+
+    protected String buildParamsJson(){
+        JSONObject jsonObject = new JSONObject();
+        for (KeyValue mKeyValue : mKeyValues) {
+            String key = mKeyValue.getKey();
+            String value = (String) mKeyValue.getValue();
+            try {
+                jsonObject.put(key, value);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
-        if (builder.length() > 0)
-            builder.deleteCharAt(0);
-        return builder.toString();
+        return jsonObject.toString();
     }
 
     /**

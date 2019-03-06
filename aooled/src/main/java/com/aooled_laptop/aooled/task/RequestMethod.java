@@ -1,7 +1,7 @@
 package com.aooled_laptop.aooled.task;
 
 public enum RequestMethod {
-    GET("GET"), POST("POST"), HEAD("HEAD"), DELETE("DELETE");
+    GET("GET"), POST("POST"), JSON("JSON"), HEAD("HEAD");
 
     private String value;
 
@@ -20,6 +20,8 @@ public enum RequestMethod {
     public boolean isOutputMethod(){
         switch(this){
             case POST:
+                return true;
+            case JSON:
                 return true;
             default:
                 return false;
