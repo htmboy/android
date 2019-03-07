@@ -14,12 +14,14 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Adapter;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import com.aooled_laptop.aooled.adapter.ViewPagerAdapter;
 import com.aooled_laptop.aooled.fragment.ContactFragment;
 import com.aooled_laptop.aooled.fragment.OrderListFragment;
 import com.aooled_laptop.aooled.fragment.PerasonFragment;
 import com.aooled_laptop.aooled.fragment.SetFragment;
+import com.aooled_laptop.aooled.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +39,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         initView();
-
+        Bundle bundle = getIntent().getExtras();
+        Logger.i(bundle.getString("username"));
         fragments = new ArrayList<>();
         fragments.add(new PerasonFragment());
         fragments.add(new OrderListFragment());

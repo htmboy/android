@@ -3,8 +3,8 @@ package com.aooled_laptop.aooled.task;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.aooled_laptop.aooled.util.CounterOutputStream;
-import com.aooled_laptop.aooled.util.Logger;
+import com.aooled_laptop.aooled.utils.CounterOutputStream;
+import com.aooled_laptop.aooled.utils.Logger;
 
 import org.json.JSONException;
 import org.json.JSONObject;

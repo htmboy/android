@@ -1,4 +1,4 @@
-package com.aooled_laptop.aooled.util;
+package com.aooled_laptop.aooled.utils;
 
 import java.io.IOException;
 import java.io.OutputStream;

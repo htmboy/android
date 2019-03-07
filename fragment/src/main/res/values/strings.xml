@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="title_content">我是标题</string>
+    <string name="content">fragment内容页面</string>
+    <string name="home_shop">热销排行</string>
+    <string name="home_share">手机专享</string>
+    <string name="home_gift">未来礼品</string>
+    <string name="home_order">我的订单</string>
+</resources>

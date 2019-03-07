@@ -1,9 +1,9 @@
-package com.aooled_laptop.aooled.util;
+package com.aooled_laptop.aooled.utils;
 
 public class StringUtils {
     public static boolean isEmpty(String str){
         if (str == null || "".equals(str))
-            return false;
-        return true;
+            return true;
+        return false;
     }
 }

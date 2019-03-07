@@ -4,7 +4,7 @@ import com.aooled_laptop.aooled.error.ParseError;
 import com.aooled_laptop.aooled.error.TimeoutError;
 import com.aooled_laptop.aooled.error.URLError;
 import com.aooled_laptop.aooled.error.UnknowHostError;
-import com.aooled_laptop.aooled.util.Logger;
+import com.aooled_laptop.aooled.utils.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
