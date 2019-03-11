@@ -37,18 +37,18 @@
                         android:layout_weight="1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="李俊标"/>
+                        android:text=""/>
                     <TextView
-                        android:id="@+id/labelCode"
 
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="工号："/>
+                        android:text="用户名："/>
                     <TextView
+                        android:id="@+id/username"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="D"/>
+                        android:text=""/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -57,93 +57,35 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="职位："/>
+                        android:text="性别："/>
                     <TextView
-
+                        android:id="@+id/sex"
                         android:layout_weight="1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="业务经理"/>
-                    <TextView
+                        android:text=""/>
+                <TextView
+                    android:id="@+id/labelCode"
 
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="状态："/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="在职"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="代号："/>
+                <TextView
+                    android:id="@+id/code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text=""/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
-    <TextView
+    <ListView
+        android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:text="2019年"/>
+        android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="10dp">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:text="单价数："/>
-            <TextView
-                android:id="@+id/na"
-                android:layout_weight="1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="123"/>
-            <TextView
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="合同金："/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="13463"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:id="@+id/labelNam"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="已收款件数："/>
-            <TextView
-                android:id="@+id/nam"
-                android:layout_weight="1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="34"/>
-            <TextView
-                android:id="@+id/labelCod"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="收款金额："/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="400000"/>
-        </LinearLayout>
-    </LinearLayout>
+    </ListView>
 
 
 </LinearLayout>

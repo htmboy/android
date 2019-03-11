@@ -53,8 +53,8 @@ public class OrderListAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         viewHolder.contact.setText(orders.get(position).getContact());
         viewHolder.orderNumber.setText(orders.get(position).getOrderNumber());
-        viewHolder.orderStatus.setText(orders.get(position).getOrderStatus() + "");
-        viewHolder.contractAmount.setText(((int) orders.get(position).getContractAmount()) + "");
+        viewHolder.orderStatus.setText(orders.get(position).getOrderStatus());
+        viewHolder.contractAmount.setText(orders.get(position).getContractAmount());
         viewHolder.customerCompany.setText(orders.get(position).getCustomerCompany());
         viewHolder.contactTel.setText(orders.get(position).getContactTel());
         return convertView;

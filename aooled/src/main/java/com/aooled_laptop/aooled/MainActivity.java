@@ -40,16 +40,30 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         setContentView(R.layout.activity_main);
         initView();
         Bundle bundle = getIntent().getExtras();
+        Logger.i(bundle.getString("id"));
         Logger.i(bundle.getString("username"));
+        Logger.i(bundle.getString("name"));
+        Logger.i(bundle.getString("code"));
+        Logger.i(bundle.getString("sex"));
+
         fragments = new ArrayList<>();
-        fragments.add(new PerasonFragment());
-        fragments.add(new OrderListFragment());
+        PerasonFragment perasonFragment = new PerasonFragment();
+        perasonFragment.setArguments(bundle);
+        fragments.add(perasonFragment);
+        OrderListFragment orderListFragment = new OrderListFragment();
+        orderListFragment.setArguments(bundle);
+        fragments.add(orderListFragment);
         fragments.add(new ContactFragment());
         fragments.add(new SetFragment());
 
         pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), fragments);
         viewPager.setAdapter(pagerAdapter);
+        viewPager.setOffscreenPageLimit(4);
+        getDate();
 
+    }
+
+    private void getDate() {
     }
 
     private void initView() {
@@ -95,4 +109,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     public void setSelect(int i){
         viewPager.setCurrentItem(i);
     }
+
+
 }

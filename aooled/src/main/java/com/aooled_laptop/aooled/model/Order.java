@@ -2,7 +2,7 @@ package com.aooled_laptop.aooled.model;
 
 public class Order {
     // 基本信息
-    private int id; // 订单id
+    private String id; // 订单id
     private boolean isDistribution; // 是否是经销
     private boolean isAssurance; //是否是质保单
     private boolean isSpecialOffer; // 是否申请特价
@@ -10,7 +10,7 @@ public class Order {
     private String orderNumber; // 订单号
     private boolean isSimpleOrder; // 是否是样品订单
     private String contractNumber; // 合同号
-    private int orderStatus; // 订单状态
+    private String orderStatus; // 订单状态
     private boolean isConstruction; // 是否是工程单
     private boolean isBorrowData; // 是否借资质
     private boolean isCancel; // 是否撤销
@@ -29,18 +29,18 @@ public class Order {
     // 收款信息
     private String recieptBank; // 收款银行
     private boolean isContainTax; // 是否含税
-    private float contractAmount; // 合同金额;
+    private String contractAmount; // 合同金额;
     private float deposit; // 定金
     private float assurance; // 质保金
     private int assuranceDate; // 质保金时间
     private float tail; // 尾款
     private int tailDate; // 尾款收取时间
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -100,11 +100,11 @@ public class Order {
         this.contractNumber = contractNumber;
     }
 
-    public int getOrderStatus() {
+    public String getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(int orderStatus) {
+    public void setOrderStatus(String orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -236,11 +236,11 @@ public class Order {
         isContainTax = containTax;
     }
 
-    public float getContractAmount() {
+    public String getContractAmount() {
         return contractAmount;
     }
 
-    public void setContractAmount(float contractAmount) {
+    public void setContractAmount(String contractAmount) {
         this.contractAmount = contractAmount;
     }
 
