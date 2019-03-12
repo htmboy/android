@@ -1,10 +1,14 @@
 package com.aooled_laptop.aooled;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -167,5 +171,37 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
 
             }
         });
+    }
+
+    // 加载图片
+    private void loadOriginalSize(ImageView img){
+        String sdcard = Environment.getDownloadCacheDirectory().getPath();
+        String filePath = sdcard + "/11.jpg";
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+        img.setImageBitmap(bitmap);
+    }
+    // 压缩图片
+    private void testPicOptimize(ImageView img){
+        String sdcard = Environment.getDownloadCacheDirectory().getPath();
+        String filePath = sdcard + "/11.jpg";
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filePath, options);
+        int width = options.outWidth;
+        options.inSampleSize = width / 200;
+        options.inPreferredConfig = Bitmap.Config.RGB_565;
+        options.inJustDecodeBounds = false;
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath, options);
+        img.setImageBitmap(bitmap);
+    }
+
+    private void testInBitmap(ImageView secondImg, Bitmap bitmap){
+        String sdcard = Environment.getDownloadCacheDirectory().getPath();
+        String filePath = sdcard + "/11.jpg";
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        // 第二张图片复用了第一张图片的内存
+        options.inBitmap = bitmap;
+        Bitmap mBitmap = BitmapFactory.decodeFile(filePath, options);
+        secondImg.setImageBitmap(mBitmap);
     }
 }
