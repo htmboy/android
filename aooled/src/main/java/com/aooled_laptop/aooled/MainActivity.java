@@ -53,7 +53,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         OrderListFragment orderListFragment = new OrderListFragment();
         orderListFragment.setArguments(bundle);
         fragments.add(orderListFragment);
-        fragments.add(new ContactFragment());
+        ContactFragment contactFragment = new ContactFragment();
+        contactFragment.setArguments(bundle);
+        fragments.add(contactFragment);
         fragments.add(new SetFragment());
 
         pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), fragments);

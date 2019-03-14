@@ -27,7 +27,7 @@ public class PerasonFragment extends Fragment {
         username = view.findViewById(R.id.username);
         sex = view.findViewById(R.id.sex);
         Bundle bundle = getArguments();
-        Toast.makeText(getActivity(), bundle.getString("username"), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(), bundle.getString("username"), Toast.LENGTH_SHORT).show();
         name.setText(bundle.getString("name"));
         code.setText(bundle.getString("code"));
         username.setText(bundle.getString("username"));

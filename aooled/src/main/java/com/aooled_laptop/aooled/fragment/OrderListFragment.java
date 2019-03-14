@@ -126,7 +126,7 @@ public class OrderListFragment extends Fragment {
 
                 Logger.i("Activity 接受到的响应码:" + response.getResponseCode());
                 String str = response.get();
-                Logger.i("Activity 接受到的结果:" + str);
+//                Logger.i("Activity 接受到的结果:" + str);
                 int code = 0;
                 try {
                     jsonObject = new JSONObject(str);
@@ -155,7 +155,7 @@ public class OrderListFragment extends Fragment {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        orderListAdapter.notifyDataSetChanged();
+//                        orderListAdapter.notifyDataSetChanged();
                         break;
                     default:
                         break;
@@ -192,7 +192,7 @@ public class OrderListFragment extends Fragment {
 
                 Logger.i("Activity 接受到的响应码:" + response.getResponseCode());
                 String str = response.get();
-                Logger.i("Activity 接受到的结果:" + str);
+//                Logger.i("Activity 接受到的结果:" + str);
                 int code = 0;
                 try {
                     jsonObject = new JSONObject(str);
@@ -205,7 +205,7 @@ public class OrderListFragment extends Fragment {
                     case 0: Toast.makeText(getActivity(), "网络错误", Toast.LENGTH_SHORT).show();
                         break;
                     case 1:
-                        Logger.i("11");
+//                        Logger.i("11");
                         JSONArray jsonArray = jsonObject.optJSONArray("data");
                         try {
                             for (int i = 0; i < jsonArray.length(); i++){
@@ -274,14 +274,14 @@ public class OrderListFragment extends Fragment {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            Logger.i("22");
+//            Logger.i("22");
             return orders;
         }
 
         @Override
         protected void onPostExecute(List<Order> orders) {
             super.onPostExecute(orders);
-            Logger.i("33");
+//            Logger.i("33");
             orderListAdapter = new OrderListAdapter(getActivity(), orders);
             listView.setAdapter(orderListAdapter);
         }

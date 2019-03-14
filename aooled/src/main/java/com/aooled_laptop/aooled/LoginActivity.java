@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -14,6 +13,7 @@ import com.aooled_laptop.aooled.error.ParseError;
 import com.aooled_laptop.aooled.error.TimeoutError;
 import com.aooled_laptop.aooled.error.URLError;
 import com.aooled_laptop.aooled.error.UnknowHostError;
+import com.aooled_laptop.aooled.model.Contact;
 import com.aooled_laptop.aooled.task.HttpListener;
 import com.aooled_laptop.aooled.task.Request;
 import com.aooled_laptop.aooled.task.RequestExecutor;
@@ -30,7 +30,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     private EditText usernameText;
@@ -75,7 +77,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onSucceed(Response<String> response) {
                 JSONObject jsonObject = null;
-                Logger.i("Activity 接受到的响应码:" + response.getResponseCode());
+//                Logger.i("Activity 接受到的响应码:" + response.getResponseCode());
                 String str = response.get();
                 Logger.i("Activity 接受到的结果:" + str);
                 int code = 0;
@@ -90,7 +92,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     case 0: Toast.makeText(LoginActivity.this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
                         break;
                     case 1:
-                        Logger.i("code: " + jsonObject.optJSONObject("data").optString("code"));
+
                         Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
                         HashMap<String, String> hashMap = new HashMap<String, String>();
                         hashMap.put("username", username);
@@ -104,6 +106,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         bundle.putString("name", data.optString("name"));
                         bundle.putString("code", data.optString("code"));
                         bundle.putString("sex", data.optString("sex"));
+                        bundle.putString("contacts", str);
+                        Logger.i("code: " + jsonObject.optString("contacts"));
+//                        JSONArray jsonArray = data.optJSONArray("contacts");
+//                        List<Contact> contacts = new ArrayList<Contact>();
+//                        for (int i = 0; i < jsonArray.length(); i++){
+//                            Contact contact = new Contact();
+//                            try {
+//                                contact.setName(jsonArray.getJSONObject(i).optString("name"));
+//                                contact.setContactHome(jsonArray.getJSONObject(i).optString("tel_home"));
+//                                contact.setContactWork(jsonArray.getJSONObject(i).optString("tel_work"));
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
+//                            contacts.add(contact);
+//                        }
+//                        bundle.put
                         intent.putExtras(bundle);
                         intent.setClass(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
