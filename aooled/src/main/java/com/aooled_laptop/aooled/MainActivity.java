@@ -101,7 +101,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 setSelect(3);
                 break;
             case R.id.add:
-
+                Toast.makeText(this, "添加订单", Toast.LENGTH_SHORT);
+                break;
             default:
                 break;
         }
