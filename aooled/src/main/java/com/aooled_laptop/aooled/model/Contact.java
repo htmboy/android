@@ -1,32 +1,22 @@
 package com.aooled_laptop.aooled.model;
 
 public class Contact {
-    private String name;
-    private String contactWork;
-    private String contactHome;
+    private String contactName;
+    private String contactNumber;
 
-    public String getName() {
-
-        return name;
+    public String getContactName() {
+        return contactName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
     }
 
-    public String getContactWork() {
-        return contactWork;
+    public String getContactNumber() {
+        return contactNumber;
     }
 
-    public void setContactWork(String contact_work) {
-        this.contactWork = contact_work;
-    }
-
-    public String getContactHome() {
-        return contactHome;
-    }
-
-    public void setContactHome(String contactHome) {
-        this.contactHome = contactHome;
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
     }
 }

@@ -155,7 +155,7 @@ public class OrderListFragment extends Fragment {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-//                        orderListAdapter.notifyDataSetChanged();
+                        orderListAdapter.notifyDataSetChanged();
                         break;
                     default:
                         break;

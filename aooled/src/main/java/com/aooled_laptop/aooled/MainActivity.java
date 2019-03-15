@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Adapter;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
@@ -34,17 +35,13 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     private FragmentTransaction fragmentTransaction;
     private List<Fragment> fragments;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         initView();
         Bundle bundle = getIntent().getExtras();
-        Logger.i(bundle.getString("id"));
-        Logger.i(bundle.getString("username"));
-        Logger.i(bundle.getString("name"));
-        Logger.i(bundle.getString("code"));
-        Logger.i(bundle.getString("sex"));
+        findViewById(R.id.add).setOnClickListener(this);
 
         fragments = new ArrayList<>();
         PerasonFragment perasonFragment = new PerasonFragment();
@@ -103,6 +100,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 //                set.setBackgroundResource(R.mipmap.settings72px);
                 setSelect(3);
                 break;
+            case R.id.add:
+
             default:
                 break;
         }

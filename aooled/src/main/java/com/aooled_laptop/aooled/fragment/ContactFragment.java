@@ -44,9 +44,8 @@ public class ContactFragment extends Fragment {
             for (int i = 0; i < jsonArray.length(); i++){
                 Contact contact = new Contact();
                 Logger.i(jsonArray.optJSONObject(i).optString("name"));
-                contact.setName(jsonArray.optJSONObject(i).optString("name"));
-                contact.setContactHome(jsonArray.optJSONObject(i).optString("tel_home"));
-                contact.setContactWork(jsonArray.optJSONObject(i).optString("tel_work"));
+                contact.setContactName(jsonArray.optJSONObject(i).optString("name"));
+                contact.setContactNumber(jsonArray.optJSONObject(i).optString("tel_work"));
                 contacts.add(contact);
             }
         } catch (JSONException e) {
@@ -58,7 +57,7 @@ public class ContactFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //                Toast.makeText(getActivity(), orders.get(position).getId(), Toast.LENGTH_SHORT).show();
 
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" +  contacts.get(position).getContactWork()));
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" +  contacts.get(position).getContactNumber()));
                 startActivity(intent);
 
             }

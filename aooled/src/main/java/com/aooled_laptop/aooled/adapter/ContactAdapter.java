@@ -43,19 +43,17 @@ public class ContactAdapter extends BaseAdapter {
         if (convertView == null){
             viewHolder = new ViewHolder();
             convertView = layoutInflater.inflate(R.layout.contact_item, null);
-            viewHolder.name = convertView.findViewById(R.id.contactName);
-            viewHolder.telWork = convertView.findViewById(R.id.telWork);
-            viewHolder.telHome = convertView.findViewById(R.id.telHome);
+            viewHolder.contactName = convertView.findViewById(R.id.contactName);
+            viewHolder.contactNumber = convertView.findViewById(R.id.contactNumber);
             convertView.setTag(viewHolder);
         }else
             viewHolder = (ViewHolder) convertView.getTag();
-        viewHolder.name.setText(contacts.get(position).getName());
-        viewHolder.telWork.setText(contacts.get(position).getContactWork());
-        viewHolder.telHome.setText(contacts.get(position).getContactHome());
+        viewHolder.contactName.setText(contacts.get(position).getContactName());
+        viewHolder.contactNumber.setText(contacts.get(position).getContactNumber());
         return convertView;
     }
 
     class ViewHolder{
-        public TextView name, telWork, telHome;
+        public TextView contactName, contactNumber;
     }
 }
