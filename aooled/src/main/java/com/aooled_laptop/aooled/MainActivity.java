@@ -1,5 +1,6 @@
 package com.aooled_laptop.aooled;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 setSelect(3);
                 break;
             case R.id.add:
-                Toast.makeText(this, "添加订单", Toast.LENGTH_SHORT);
+                startActivity(new Intent(this, OrderAddActivity.class));
                 break;
             default:
                 break;

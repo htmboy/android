@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp"
+
     android:background="@color/colorPrimary"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -11,23 +11,38 @@
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="10dp"
         android:textStyle="bold"
         android:text="订单系统" />
 
-    <ImageView
+    <RelativeLayout
         android:id="@+id/add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:padding="10dp"
         app:layout_constraintRight_toRightOf="parent"
-        android:background="@mipmap/add64px"/>
-
-    <ImageView
-        android:id="@+id/search"
+        >
+        <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:src="@mipmap/search64px"
+
+        android:background="@mipmap/add64px"/>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/search"
         app:layout_constraintRight_toLeftOf="@+id/add"
-        />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        >
+        <ImageView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/search64px"
+
+            />
+    </RelativeLayout>
 </android.support.constraint.ConstraintLayout>
