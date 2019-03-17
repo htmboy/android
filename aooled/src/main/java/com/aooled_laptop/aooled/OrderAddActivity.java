@@ -14,6 +14,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aooled_laptop.aooled.model.Order;
+import com.aooled_laptop.aooled.utils.Logger;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.Calendar;
 
 public class OrderAddActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, DatePicker.OnDateChangedListener {
@@ -24,6 +30,7 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
     private CheckBox isDistribution, isBorrowData, isAssurance, isConstruction, isSpecialOffer, isSimpleOrder, isAlterReciept, isNoticeDelivery, isContainTax;
     private int year, month, day, hour, minute;
     private StringBuffer date = new StringBuffer();
+    private Order order = new Order();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +55,6 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
 
     private void init(){
         orderNumber = findViewById(R.id.orderNumber);
-
         contractNumber = findViewById(R.id.contractNumber);
         goodsCount = findViewById(R.id.goodsCount);
         method = findViewById(R.id.method);
@@ -132,6 +138,16 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
                 finish();
                 break;
             case R.id.submit:
+                if(submitData()) {
+                    Toast.makeText(this, "提交成功", Toast.LENGTH_SHORT).show();
+                    JSONObject jsonObject = (JSONObject) JSONObject.wrap(order);
+                    Logger.i(order.getContact());
+                    try {
+                        Logger.i(jsonObject.toString());
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
                 break;
             case R.id.fillDate:
                 showAlertDialog(fillDate);
@@ -144,6 +160,155 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
                 break;
         }
 
+    }
+
+    public boolean submitData(){
+        if ("".equals(getData(orderNumber)) || getData(orderNumber) == null)
+            return false;
+        order.setOrderNumber(getData(orderNumber));
+
+        if ("".equals(getData(fillDate)) || getData(fillDate) == null)
+            return false;
+        order.setFillDate(getData(fillDate));
+
+        if ("".equals(getData(contractNumber)) || getData(contractNumber) == null)
+            return false;
+        order.setContractNumber(getData(contractNumber));
+
+        if ("".equals(getData(goodsCount)) || getData(goodsCount) == null)
+            return false;
+        order.setGoodsCount(getData(goodsCount));
+
+        if ("".equals(getData(method)) || getData(method) == null)
+            return false;
+        order.setMethod(getData(method));
+
+        if ("".equals(getData(price)) || getData(price) == null)
+            return false;
+        order.setExpressPrice(getData(price));
+
+        if ("".equals(getData(payer)) || getData(payer) == null)
+            return false;
+        order.setPayer(getData(payer));
+
+        if ("".equals(getData(customer)) || getData(customer) == null)
+            return false;
+        order.setCustomerCompany(getData(customer));
+
+        if (getData(isAlterReciept)) {
+            if ("".equals(getData(alterAmount)) || getData(alterAmount) == null)
+                return false;
+            order.setAlterAmount(getData(alterAmount));
+        }
+
+        if ("".equals(getData(sendTo)) || getData(sendTo) == null)
+            return false;
+        order.setSendTo(getData(sendTo));
+
+        if ("".equals(getData(contact)) || getData(contact) == null)
+            return false;
+        order.setContact(getData(contact));
+
+        if ("".equals(getData(contactTel)) || getData(contactTel) == null)
+            return false;
+        order.setContactTel(getData(contactTel));
+
+        if ("".equals(getData(recieptBank)) || getData(recieptBank) == null)
+            return false;
+        order.setRecieptBank(getData(recieptBank));
+
+        if ("".equals(getData(contractAmount)) || getData(contractAmount) == null)
+            return false;
+        order.setContractAmount(getData(contractAmount));
+
+        if ("".equals(getData(deposit)) || getData(deposit) == null)
+            return false;
+        order.setDeposit(getData(deposit));
+
+        if ("".equals(getData(tail)) || getData(tail) == null)
+            return false;
+        order.setTail(getData(tail));
+
+        if ("".equals(getData(tailDate)) || getData(tailDate) == null)
+            return false;
+        order.setTailDate(getData(tailDate));
+
+        if (getData(isAssurance)) {
+            if ("".equals(getData(assurance)) || getData(assurance) == null)
+                return false;
+            order.setAssurance(getData(assurance));
+        }
+
+        if (getData(isAssurance)) {
+            if ("".equals(getData(assuranceDate)) || getData(assuranceDate) == null)
+                return false;
+            order.setAssuranceDate(getData(assuranceDate));
+        }
+
+        if (getData(isConstruction)) {
+            if ("".equals(getData(constructionAmount)) || getData(constructionAmount) == null)
+                return false;
+            order.setContractAmount(getData(constructionAmount));
+        }
+
+        if (getData(isConstruction)) {
+            if ("".equals(getData(constructionAccount)) || getData(constructionAccount) == null)
+                return false;
+            order.setConstructionAccount(getData(constructionAccount));
+        }
+        order.setDistribution(getData(isDistribution));
+        order.setBorrowData(getData(isBorrowData));
+        order.setAssurance(getData(isAssurance));
+        order.setConstruction(getData(isConstruction));
+        order.setSpecialOffer(getData(isSpecialOffer));
+        order.setSimpleOrder(getData(isSimpleOrder));
+        order.setAlterReciept(getData(isAlterReciept));
+        order.setNoticeDelivery(getData(isNoticeDelivery));
+        order.setContainTax(getData(isContainTax));
+
+
+        return true;
+    }
+
+    public String getData(EditText editText){
+        String text = "";
+        text = editText.getText().toString().trim();
+        if ("".equals(text) || text == null)
+            editText.requestFocus();
+        return text;
+    }
+    public String getData(TextView textView){
+        String text = textView.getText().toString().trim();
+        if ("".equals(text) || text == null)
+            textView.requestFocus();
+        return text;
+    }
+    public boolean getData(CheckBox checkBox){
+        if(checkBox == isAssurance){
+            String textDate = assuranceDate.getText().toString().trim();
+            String text = assurance.getText().toString().trim();
+            if ("".equals(text) || text == null) {
+                assuranceDate.requestFocus();
+            }
+            else if("".equals(textDate) || textDate == null) {
+                assurance.requestFocus();
+            }
+        }
+        if(checkBox == isDistribution){
+            String textAmount = constructionAmount.getText().toString();
+            String textAccount = constructionAccount.getText().toString();
+            if ("".equals(textAmount) || textAmount == null)
+                constructionAmount.requestFocus();
+            else if("".equals(textAccount) || textAccount == null)
+                constructionAccount.requestFocus();
+        }
+        if(checkBox == isAlterReciept) {
+            String textAlter = alterAmount.getText().toString();
+            if ("".equals(textAlter) || textAlter == null)
+                alterAmount.requestFocus();
+        }
+
+        return checkBox.isChecked();
     }
 
     public void showAlertDialog(TextView id){

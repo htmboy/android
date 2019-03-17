@@ -156,7 +156,6 @@
                     android:id="@+id/contractNumber"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAlignment="center"
                     android:ems="10"
                     android:inputType="textPersonName"
                     android:text="" />
@@ -174,7 +173,6 @@
                     android:id="@+id/goodsCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAlignment="center"
                     android:ems="10"
                     android:inputType="number" />
             </LinearLayout>
