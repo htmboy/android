@@ -130,14 +130,17 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:text="填单日期："
                     />
-                <EditText
+                <TextView
                     android:id="@+id/fillDate"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:layout_margin="10dp"
                     android:ems="10"
-                    android:inputType="date" />
+                    android:background="#ededed"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -436,15 +439,17 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:text="尾款收取时间："
                     />
-                <EditText
+                <TextView
                     android:id="@+id/tailDate"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:layout_margin="10dp"
                     android:ems="10"
-                    android:inputType="date"
-                    android:text="" />
+                    android:background="#ededed"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -472,15 +477,17 @@
                     android:id="@+id/assuranceDateLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:text="质保金收取时间："
                     />
-                <EditText
+                <TextView
                     android:id="@+id/assuranceDate"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:layout_margin="10dp"
                     android:ems="10"
-                    android:inputType="datetime"
-                    android:text="" />
+                    android:background="#ededed"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
