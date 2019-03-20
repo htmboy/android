@@ -35,13 +35,14 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
     private List<Fragment> fragments;
+    private Bundle bundle;
     @Override
     protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         initView();
-        Bundle bundle = getIntent().getExtras();
+        bundle = getIntent().getExtras();
         findViewById(R.id.add).setOnClickListener(this);
 
         fragments = new ArrayList<>();
@@ -102,7 +103,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 setSelect(3);
                 break;
             case R.id.add:
-                startActivity(new Intent(this, OrderAddActivity.class));
+                Intent intent = new Intent(this, OrderAddActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
             default:
                 break;

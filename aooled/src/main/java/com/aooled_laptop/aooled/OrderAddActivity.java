@@ -1,6 +1,7 @@
 package com.aooled_laptop.aooled;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -14,13 +15,28 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aooled_laptop.aooled.error.ParseError;
+import com.aooled_laptop.aooled.error.TimeoutError;
+import com.aooled_laptop.aooled.error.URLError;
+import com.aooled_laptop.aooled.error.UnknowHostError;
 import com.aooled_laptop.aooled.model.Order;
+import com.aooled_laptop.aooled.task.HttpListener;
+import com.aooled_laptop.aooled.task.Request;
+import com.aooled_laptop.aooled.task.RequestExecutor;
+import com.aooled_laptop.aooled.task.RequestMethod;
+import com.aooled_laptop.aooled.task.Response;
+import com.aooled_laptop.aooled.task.StringRequest;
+import com.aooled_laptop.aooled.utils.Constants;
 import com.aooled_laptop.aooled.utils.Logger;
+import com.aooled_laptop.aooled.utils.MD5Util;
+import com.aooled_laptop.aooled.utils.SaveInfoUtils;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Calendar;
+import java.util.HashMap;
 
 public class OrderAddActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, DatePicker.OnDateChangedListener {
     private EditText orderNumber, contractNumber, goodsCount, method, price, payer, customer;
@@ -31,11 +47,17 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
     private int year, month, day, hour, minute;
     private StringBuffer date = new StringBuffer();
     private Order order = new Order();
+    private String id;
+    private String code;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.order_add);
+        Bundle bundle = getIntent().getExtras();
+        id = bundle.getString("id");
+        code = bundle.getString("code");
+        Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
         init();
         checkOut();
         event();
@@ -139,14 +161,11 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.submit:
                 if(submitData()) {
-                    Toast.makeText(this, "提交成功", Toast.LENGTH_SHORT).show();
-                    JSONObject jsonObject = (JSONObject) JSONObject.wrap(order);
-                    Logger.i(order.getContact());
-                    try {
-                        Logger.i(jsonObject.toString());
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
+//                    Toast.makeText(this, "提交成功", Toast.LENGTH_SHORT).show();
+
+
+                    submit();
+
                 }
                 break;
             case R.id.fillDate:
@@ -162,7 +181,58 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
+    public void submit(){
+        Request<String> request = new StringRequest(Constants.URL_UPLOAD, RequestMethod.JSON);
+        request.add("code", "3");
+        request.add("data", order.toJson());
+        RequestExecutor.INTANCE.execute(request, new HttpListener<String>() {
+
+            @Override
+            public void onSucceed(Response<String> response) {
+                JSONObject jsonObject = null;
+                String str = response.get();
+                Logger.i("Activity 接受到的结果:" + str);
+                int code = 0;
+                try {
+                    jsonObject = new JSONObject(str);
+                    code = jsonObject.optInt("code");
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                switch (code){
+                    case 0: Toast.makeText(OrderAddActivity.this, "数据错误, 请联系管理员", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 1: Toast.makeText(OrderAddActivity.this, jsonObject.optString("message"), Toast.LENGTH_SHORT).show();
+                        finish();
+                        break;
+                    default:
+                        break;
+                }
+            }
+            @Override
+            public void onFailed(Exception e) {
+                if (e instanceof ParseError){
+                    // 数据解析异常
+                    Logger.d("数据解析异常");
+                }else if (e instanceof TimeoutError){
+                    // 超时
+                    Logger.d("超时");
+                }else if (e instanceof UnknowHostError){
+                    // 没有找到服务器
+                    Logger.d("没有找到服务器");
+                }else if (e instanceof URLError){
+                    // URL格式错误
+                    Logger.d("URL格式错误");
+                }
+
+            }
+        });
+    }
+
     public boolean submitData(){
+        order.setId(id);
+        order.setCode(code);
         if ("".equals(getData(orderNumber)) || getData(orderNumber) == null)
             return false;
         order.setOrderNumber(getData(orderNumber));

@@ -97,6 +97,10 @@ public abstract class Request<T> {
         mKeyValues.add(new KeyValue(key, value));
     }
 
+    public void add(String key, JSONObject value){
+        mKeyValues.add(new KeyValue(key, value));
+    }
+
     public void add(String key, Binary value){
 
         mKeyValues.add(new KeyValue(key, value));
@@ -352,9 +356,12 @@ public abstract class Request<T> {
         JSONObject jsonObject = new JSONObject();
         for (KeyValue mKeyValue : mKeyValues) {
             String key = mKeyValue.getKey();
-            String value = (String) mKeyValue.getValue();
+            Object value = mKeyValue.getValue();
             try {
-                jsonObject.put(key, value);
+                if (value instanceof JSONObject)
+                    jsonObject.put(key, value);
+                else
+                    jsonObject.put(key, value);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

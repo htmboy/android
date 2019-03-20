@@ -1,8 +1,13 @@
 package com.aooled_laptop.aooled.model;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Order {
     // 基本信息
+
     private String id; // 订单id
+    private String code; // 代号
     private boolean isDistribution; // 是否是经销
     private boolean isAssurance; //是否是质保单
     private boolean isSpecialOffer; // 是否申请特价
@@ -57,6 +62,14 @@ public class Order {
     public String getId() {
 
         return id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public void setId(String id) {
@@ -302,4 +315,65 @@ public class Order {
     public void setTailDate(String tailDate) {
         this.tailDate = tailDate;
     }
+
+    public JSONObject toJson(){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("id", id);
+            jsonObject.put("code", code);
+            jsonObject.put("isDistribution", isDistribution);
+            jsonObject.put("isAssurance", isAssurance);
+            jsonObject.put("isSpecialOffer", isSpecialOffer);
+            jsonObject.put("fillDate", fillDate);
+            jsonObject.put("orderNumber", orderNumber);
+            jsonObject.put("isSimpleOrder", isSimpleOrder);
+            jsonObject.put("contractNumber", contractNumber);
+            jsonObject.put("orderStatus", orderStatus);
+            jsonObject.put("isConstruction", isConstruction);
+            jsonObject.put("isBorrowData", isBorrowData);
+            jsonObject.put("isCancel", isCancel);
+            jsonObject.put("goodsCount", goodsCount);
+            jsonObject.put("method", method);
+            jsonObject.put("expressPrice", expressPrice);
+            jsonObject.put("payer", payer);
+            jsonObject.put("customerCompany", customerCompany);
+            jsonObject.put("isAlterReciept", isAlterReciept);
+            jsonObject.put("alterAmount", alterAmount);
+            jsonObject.put("isNoticeDelivery", isNoticeDelivery);
+            jsonObject.put("sendTo", sendTo);
+            jsonObject.put("contact", contact);
+            jsonObject.put("contactTel", contactTel);
+            jsonObject.put("recieptBank", recieptBank);
+            jsonObject.put("isContainTax", isContainTax);
+            jsonObject.put("contractAmount", contractAmount);
+            jsonObject.put("deposit", deposit);
+            jsonObject.put("assurance", assurance);
+            jsonObject.put("assuranceDate", assuranceDate);
+            jsonObject.put("tail", tail);
+            jsonObject.put("tailDate", tailDate);
+            jsonObject.put("constructionAmount", constructionAmount);
+            jsonObject.put("constructionAccount", constructionAccount);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObject;
+    }
+
+    public String toString(){
+        return "{" + "\"id\":\"" + id + "\",\"isDistribution\":\"" + isDistribution + "\",\"isAssurance\":\"" + isAssurance
+                + "\",\"isSpecialOffer\":\"" + isSpecialOffer + "\",\"fillDate\":\"" +  fillDate
+                + "\",\"orderNumber\":\"" + orderNumber + "\",\"isSimpleOrder\":\"" + isSimpleOrder + "\",\"contractNumber\":\"" + contractNumber
+                + "\",\"orderStatus\":\"" + orderStatus + "\",\"isConstruction\":\"" + isConstruction + "\",\"isBorrowData\":\""+ isBorrowData
+                + "\",\"isCancel\":\"" + isCancel + "\",\"goodsCount\":\"" + goodsCount + "\",\"method\":\"" + method
+                + "\",\"expressPrice\":\"" + expressPrice + "\",\"payer\":\"" + payer + "\",\"customerCompany\":\"" + customerCompany
+                + "\",\"isAlterReciept\":\"" + isAlterReciept + "\",\"alterAmount\":\"" + alterAmount + "\",\"isNoticeDelivery\":\"" + isNoticeDelivery
+                + "\",\"sendTo\":\"" + sendTo + "\",\"contact\":\"" + contact + "\",\"contactTel\":\"" + contactTel
+                + "\",\"recieptBank\":\"" + recieptBank + "\",\"isContainTax\":\"" + isContainTax + "\",\"contractAmount\":\"" + contractAmount
+                + "\",\"deposit\":\"" + deposit + "\",assurance\":\"" + assurance + "\",\"assuranceDate\":\"" + assuranceDate
+                + "\",\"tail\":\"" + tail + "\",\"tailDate\":\"" + tailDate + "\"  ,\"constructionAmount\":\"" + constructionAmount + "\",\"constructionAccount\":\"" + constructionAccount + "\"}";
+
+    }
+
+
 }

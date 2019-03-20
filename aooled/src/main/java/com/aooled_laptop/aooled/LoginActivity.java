@@ -77,7 +77,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onSucceed(Response<String> response) {
                 JSONObject jsonObject = null;
-//                Logger.i("Activity 接受到的响应码:" + response.getResponseCode());
                 String str = response.get();
                 Logger.i("Activity 接受到的结果:" + str);
                 int code = 0;
@@ -108,20 +107,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         bundle.putString("sex", data.optString("sex"));
                         bundle.putString("contacts", str);
                         Logger.i("code: " + jsonObject.optString("contacts"));
-//                        JSONArray jsonArray = data.optJSONArray("contacts");
-//                        List<Contact> contacts = new ArrayList<Contact>();
-//                        for (int i = 0; i < jsonArray.length(); i++){
-//                            Contact contact = new Contact();
-//                            try {
-//                                contact.setName(jsonArray.getJSONObject(i).optString("name"));
-//                                contact.setContactHome(jsonArray.getJSONObject(i).optString("tel_home"));
-//                                contact.setContactWork(jsonArray.getJSONObject(i).optString("tel_work"));
-//                            } catch (JSONException e) {
-//                                e.printStackTrace();
-//                            }
-//                            contacts.add(contact);
-//                        }
-//                        bundle.put
                         intent.putExtras(bundle);
                         intent.setClass(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
