@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         initView();
         bundle = getIntent().getExtras();
         findViewById(R.id.add).setOnClickListener(this);
+        findViewById(R.id.search).setOnClickListener(this);
 
         fragments = new ArrayList<>();
         PerasonFragment perasonFragment = new PerasonFragment();
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         contact.setOnClickListener(this);
         set.setOnClickListener(this);
 
+
     }
 
     @Override
@@ -107,6 +109,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
+            case R.id.search:
+                intent = new Intent(this, SearchActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
             default:
                 break;
         }

@@ -28,6 +28,9 @@
         <activity android:name=".OrderAddActivity">
 
         </activity>
+        <activity android:name=".SearchActivity">
+
+        </activity>
     </application>
 
 </manifest>
