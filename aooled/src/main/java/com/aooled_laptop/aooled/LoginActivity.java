@@ -48,7 +48,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         usernameText = findViewById(R.id.username);
         passwordText = findViewById(R.id.password);
         findViewById(R.id.login).setOnClickListener(this);
-//        SaveInfoUtils.delLoginInfo(LoginActivity.this);
         if ((hashMap = SaveInfoUtils.getLoginInfo(LoginActivity.this)) != null){
             usernameText.setText(hashMap.get("username"));
             passwordText.setText(hashMap.get("password"));
@@ -78,7 +77,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             public void onSucceed(Response<String> response) {
                 JSONObject jsonObject = null;
                 String str = response.get();
-                Logger.i("Activity 接受到的结果:" + str);
+//                Logger.i(str);
                 int code = 0;
                 try {
                     jsonObject = new JSONObject(str);
@@ -91,25 +90,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     case 0: Toast.makeText(LoginActivity.this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
                         break;
                     case 1:
-
                         Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
                         HashMap<String, String> hashMap = new HashMap<String, String>();
                         hashMap.put("username", username);
                         hashMap.put("password", password);
                         SaveInfoUtils.saveLoginInfo(getApplicationContext(), hashMap);
-                        JSONObject data = jsonObject.optJSONObject("data");
+                        JSONObject userInfo = jsonObject.optJSONObject("userInfo");
                         Intent intent = new Intent();
                         Bundle bundle = new Bundle();
-                        bundle.putString("id", data.optString("id"));
-                        bundle.putString("username", data.optString("username"));
-                        bundle.putString("name", data.optString("name"));
-                        bundle.putString("code", data.optString("code"));
-                        bundle.putString("sex", data.optString("sex"));
-                        bundle.putString("contacts", str);
-                        Logger.i("code: " + jsonObject.optString("contacts"));
+                        bundle.putString("id", userInfo.optString("id"));
+                        bundle.putString("username", userInfo.optString("username"));
+                        bundle.putString("name", userInfo.optString("name"));
+                        bundle.putString("code", userInfo.optString("code"));
+                        bundle.putString("sex", userInfo.optString("sex"));
+                        bundle.putString("contacts", jsonObject.optString("contacts"));
+                        bundle.putString("orders", jsonObject.optString("orders"));
+                        bundle.putInt("totalItem", jsonObject.optInt("totalItem"));
                         intent.putExtras(bundle);
                         intent.setClass(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
+                        Logger.i("login");
                         finish();
                         break;
                     default:

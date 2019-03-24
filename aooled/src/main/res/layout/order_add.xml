@@ -112,16 +112,18 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:text="订单号："
                     />
 
-                <EditText
+                <TextView
                     android:id="@+id/orderNumber"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:layout_margin="10dp"
                     android:ems="10"
-                    android:inputType="textPersonName"
-                    android:text="" />
+                    android:background="#ededed"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
             <LinearLayout

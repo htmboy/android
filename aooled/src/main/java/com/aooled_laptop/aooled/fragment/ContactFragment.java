@@ -38,12 +38,10 @@ public class ContactFragment extends Fragment {
         View view = inflater.inflate(R.layout.contact, null);
         listView = view.findViewById(R.id.contactView);
         contacts = new ArrayList<>();
-        Logger.i(getArguments().getString("contacts"));
         try {
-            JSONArray jsonArray = new JSONObject(getArguments().getString("contacts")).optJSONArray("contacts");
+            JSONArray jsonArray = new JSONArray(getArguments().getString("contacts"));
             for (int i = 0; i < jsonArray.length(); i++){
                 Contact contact = new Contact();
-                Logger.i(jsonArray.optJSONObject(i).optString("name"));
                 contact.setContactName(jsonArray.optJSONObject(i).optString("name"));
                 contact.setContactNumber(jsonArray.optJSONObject(i).optString("tel_work"));
                 contacts.add(contact);
@@ -55,7 +53,6 @@ public class ContactFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Toast.makeText(getActivity(), orders.get(position).getId(), Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" +  contacts.get(position).getContactNumber()));
                 startActivity(intent);
@@ -74,14 +71,12 @@ public class ContactFragment extends Fragment {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-//            Logger.i("22");
             return contacts;
         }
 
         @Override
         protected void onPostExecute(List<Contact> contacts) {
             super.onPostExecute(contacts);
-//            Logger.i("33");
             listView.setAdapter(new ContactAdapter(getActivity(), contacts));
         }
     }
