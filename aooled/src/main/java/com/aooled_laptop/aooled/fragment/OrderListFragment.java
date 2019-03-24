@@ -3,9 +3,11 @@ package com.aooled_laptop.aooled.fragment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +36,7 @@ import com.aooled_laptop.aooled.utils.Constants;
 import com.aooled_laptop.aooled.utils.Logger;
 import com.aooled_laptop.aooled.utils.MD5Util;
 import com.aooled_laptop.aooled.utils.SaveInfoUtils;
+import com.aooled_laptop.aooled.view.FlashListView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,7 +46,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class OrderListFragment extends Fragment {
+public class OrderListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+    private SwipeRefreshLayout swipeRefreshLayout;
     private ListView listView;
     private List<Order> orders = new ArrayList<>();
     private OrderListAdapter orderListAdapter;
@@ -56,12 +60,6 @@ public class OrderListFragment extends Fragment {
     private int pageNumber;
 
 
-//    public void setUserVisibleHint(boolean isVisibleToUser) {
-//        super.setUserVisibleHint(isVisibleToUser);
-////        Logger.i("setUserVisibleHint");
-////        listView.setAdapter(orderListAdapter);
-//    }
-
     @Nullable
     @Override
 
@@ -69,6 +67,7 @@ public class OrderListFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.orderlist, container, false);
         listView = view.findViewById(R.id.listView);
+        swipeRefreshLayout = view.findViewById(R.id.swipe);
         Bundle bundle = getArguments();
         totalItem = bundle.getInt("totalItem");
         dataResource(getArguments().getString("orders"));
@@ -103,14 +102,13 @@ public class OrderListFragment extends Fragment {
             }
         });
 
-
+        swipeRefreshLayout.setOnRefreshListener(this);
         return view;
     }
     public void dataResourcePage(){
         Request<String> request = new StringRequest(Constants.URL_UPLOAD, RequestMethod.JSON);
         request.add("id", getArguments().getString("id"));
         request.add("code", 21);
-        Logger.i(currentPage);
         request.add("page", currentPage);
 //        orders = new ArrayList<Order>();
         RequestExecutor.INTANCE.execute(request, new HttpListener<String>() {
@@ -175,7 +173,6 @@ public class OrderListFragment extends Fragment {
         try {
             for (int i = 0; i < jsonArray.length(); i++) {
                 Order order = new Order();
-                Logger.i(jsonArray.getJSONObject(i).optString("orderId"));
                 order.setId(jsonArray.getJSONObject(i).optString("orderId"));
                 order.setCustomerCompany(jsonArray.getJSONObject(i).optString("customer"));
                 order.setContact(jsonArray.getJSONObject(i).optString("contact"));
@@ -188,5 +185,19 @@ public class OrderListFragment extends Fragment {
         } catch (JSONException e){
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        swipeRefreshLayout.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                orders.clear();
+                currentPage = 0;
+                dataResourcePage();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }, 1000);
     }
 }
