@@ -110,7 +110,6 @@ public class OrderListFragment extends Fragment implements SwipeRefreshLayout.On
         request.add("id", getArguments().getString("id"));
         request.add("code", 21);
         request.add("page", currentPage);
-//        orders = new ArrayList<Order>();
         RequestExecutor.INTANCE.execute(request, new HttpListener<String>() {
             @Override
             public void onSucceed(Response<String> response) {
@@ -194,7 +193,7 @@ public class OrderListFragment extends Fragment implements SwipeRefreshLayout.On
             public void run() {
 
                 orders.clear();
-                currentPage = 0;
+                currentPage = 1;
                 dataResourcePage();
                 swipeRefreshLayout.setRefreshing(false);
             }

@@ -41,10 +41,10 @@ import java.util.HashMap;
 public class OrderAddActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, DatePicker.OnDateChangedListener {
     private EditText contractNumber, goodsCount, method, price, payer, customer;
     private EditText alterAmount, sendTo, contact, contactTel, recieptBank, contractAmount, deposit;
-    private EditText tail, assurance, constructionAmount, constructionAccount;
-    private TextView fillDate, tailDate, orderNumber, assuranceDate, alterAmountLabel, assuranceLabel, assuranceDateLabel, constructionAmountLabel, constructionAccountLabel;
+    private EditText assurance, constructionAmount, constructionAccount;
+    private TextView fillDate, tailDate, tail, orderNumber, assuranceDate, alterAmountLabel, assuranceLabel, assuranceDateLabel, constructionAmountLabel, constructionAccountLabel;
     private CheckBox isDistribution, isBorrowData, isAssurance, isConstruction, isSpecialOffer, isSimpleOrder, isAlterReciept, isNoticeDelivery, isContainTax;
-    private int year, month, day, hour, minute;
+    private int year, month, day;
     private StringBuffer date = new StringBuffer();
     private Order order = new Order();
     private String id;
@@ -118,8 +118,6 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
-        hour = calendar.get(Calendar.HOUR);
-        minute = calendar.get(Calendar.MINUTE);
     }
 
     private void checkOut(){
