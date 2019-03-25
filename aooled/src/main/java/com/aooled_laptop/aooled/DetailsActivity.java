@@ -2,12 +2,14 @@ package com.aooled_laptop.aooled;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -44,6 +46,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
+import java.util.zip.Inflater;
 
 public class DetailsActivity extends AppCompatActivity implements View.OnClickListener {
     TextView orderNumber, isDistribution, isSpecialOffer, fillDate, isSimpleOrder, contractNumber, isConstruction, isBorrowData, goodsCount, isAssurance, method;
@@ -274,7 +277,6 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         public void run() {
             final List<Bitmap> bitmaps = new ArrayList<Bitmap>();
             for(int i = 0; i < imageArray.length(); i++){
-//                ImageView imageView = new ImageView(DetailsActivity.this);
                 try {
 //                    imageView.setImageBitmap(getImage(Constants.URL_IMAGE + "/storage/uploads/" + jsonArrays[0].getJSONObject(i).optString("imageName")));
                     bitmaps.add(i, getImage(Constants.URL_IMAGE + "/storage/uploads/" + imageArray.getJSONObject(i).optString("imageName")));
@@ -286,11 +288,26 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    for (int i = 0; i < bitmaps.size(); i++){
-                        ImageView imageView = new ImageView(DetailsActivity.this);
-                        imageView.setImageBitmap(bitmaps.get(i));
-                        linearLayout.addView(imageView);
+                    try {
+                        for (int i = 0; i < bitmaps.size(); i++){
+                            View view = LayoutInflater.from(DetailsActivity.this).inflate(R.layout.orderlist_details_image, null);
 
+                            TextView imageTitle = view.findViewById(R.id.imageTitle);
+                            imageTitle.setText("图片名称：" + imageArray.getJSONObject(i).optString("imageTitle"));
+
+                            TextView imageDescript = view.findViewById(R.id.imageDescript);
+                            imageDescript.setText("图片描述：" + imageArray.getJSONObject(i).optString("imageDescript"));
+
+                            TextView imageDate = view.findViewById(R.id.imageDate);
+                            imageDate.setText("上传日期：" + TimestampUtil.getCurrentTime(imageArray.getJSONObject(i).optString("imageDate")));
+
+                            ImageView imageView = view.findViewById(R.id.image);
+                            imageView.setImageBitmap(bitmaps.get(i));
+
+                            linearLayout.addView(view);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 }
             });
