@@ -44,18 +44,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-        Window window = getWindow();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            findViewById(R.id.navTop).setBackgroundColor(window.getNavigationBarColor());
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            findViewById(R.id.navTop).setBackgroundColor(window.getColorMode());
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            findViewById(R.id.navTop).setBackgroundColor(window.getNavigationBarColor());
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            findViewById(R.id.navTop).setBackgroundColor(window.getNavigationBarDividerColor());
+            Window window = getWindow();
+            findViewById(R.id.navTop).setBackgroundColor(window.getStatusBarColor());
         }
         initView();
         bundle = getIntent().getExtras();
