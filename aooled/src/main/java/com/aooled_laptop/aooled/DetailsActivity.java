@@ -30,6 +30,7 @@ import com.aooled_laptop.aooled.task.Response;
 import com.aooled_laptop.aooled.task.StringRequest;
 import com.aooled_laptop.aooled.utils.Constants;
 import com.aooled_laptop.aooled.utils.Logger;
+import com.aooled_laptop.aooled.utils.TimestampUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -137,7 +138,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
                         orderNumber.setText(jsonObject1.optString("orderNumber"));
                         isDistribution.setText(jsonObject1.optString("isDistribution"));
                         isSpecialOffer.setText(jsonObject1.optString("isSpecialOffer"));
-                        fillDate.setText(jsonObject1.optString("fillDate"));
+                        fillDate.setText(TimestampUtil.getCurrentTime(jsonObject1.optString("fillDate")));
                         isSimpleOrder.setText(jsonObject1.optString("isSimpleOrder"));
                         contractNumber.setText(jsonObject1.optString("contractNumber"));
                         isConstruction.setText(jsonObject1.optString("isConstruction"));
@@ -158,12 +159,12 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
                         recieptBank.setText(jsonObject1.optString("recieptBank"));
                         isContainTax.setText(jsonObject1.optString("isContainTax"));
                         deposit.setText(jsonObject1.optString("deposit"));
-                        assurance.setText(jsonObject1.optString("assurance"));
-                        assuranceDate.setText(jsonObject1.optString("assuranceDate"));
+                        assurance.setText("0.00".equals(jsonObject1.optString("assurance")) ? "/" : jsonObject1.optString("assurance"));
+                        assuranceDate.setText("0".equals(jsonObject1.optString("assuranceDate")) ? "/" : TimestampUtil.getCurrentTime(jsonObject1.optString("assuranceDate")));
                         constructionAmount.setText(jsonObject1.optString("constructionAmount"));
                         constructionAccount.setText(jsonObject1.optString("constructionAccount"));
                         tail.setText(jsonObject1.optString("tail"));
-                        tailDate.setText(jsonObject1.optString("tailDate"));
+                        tailDate.setText("0".equals(jsonObject1.optString("tailDate")) ? "/" : TimestampUtil.getCurrentTime(jsonObject1.optString("tailDate")));
                         contractAmount.setText(jsonObject1.optString("contractAmount"));
 
                         imageArray = jsonObject.optJSONArray("image");

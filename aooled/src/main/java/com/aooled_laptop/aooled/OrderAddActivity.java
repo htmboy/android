@@ -30,6 +30,7 @@ import com.aooled_laptop.aooled.utils.Constants;
 import com.aooled_laptop.aooled.utils.Logger;
 import com.aooled_laptop.aooled.utils.MD5Util;
 import com.aooled_laptop.aooled.utils.SaveInfoUtils;
+import com.aooled_laptop.aooled.utils.TimestampUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -69,7 +70,7 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
         isAssurance.setOnCheckedChangeListener(this);
         isConstruction.setOnCheckedChangeListener(this);
         isAlterReciept.setOnCheckedChangeListener(this);
-        fillDate.setOnClickListener(this);
+//        fillDate.setOnClickListener(this);
 
         tailDate.setOnClickListener(this);
         assuranceDate.setOnClickListener(this);
@@ -163,9 +164,9 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
                     submit(true);
                 }
                 break;
-            case R.id.fillDate:
-                showAlertDialog(fillDate);
-                break;
+//            case R.id.fillDate:
+//                showAlertDialog(fillDate);
+//                break;
             case R.id.tailDate:
                 showAlertDialog(tailDate);
                 break;
@@ -217,7 +218,7 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
                     case 3: // 初始化没有找到记录, 则生成订单号
                         Toast.makeText(OrderAddActivity.this, "无记录", Toast.LENGTH_SHORT).show();
                         orderNumber.setText(jsonObject.optString("orderNumber"));
-                        fillDate.setText(jsonObject.optString("fillDate"));
+                        fillDate.setText(TimestampUtil.getCurrentTime(jsonObject.optString("fillDate")));
                         break;
                     default:
                         break;
@@ -444,7 +445,7 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
             orderNumber.setText(jsonObject1.optString("orderNumber"));
             isDistribution.setChecked("0".equals(jsonObject1.optString("isDistribution")) ? false : true);
             isSpecialOffer.setChecked("0".equals(jsonObject1.optString("isSpecialOffer")) ? false : true);
-            fillDate.setText(jsonObject1.optString("fillDate"));
+            fillDate.setText(TimestampUtil.getCurrentTime(jsonObject1.optString("fillDate")));
             isSimpleOrder.setChecked("0".equals(jsonObject1.optString("isSimpleOrder")) ? false : true);
             contractNumber.setText(jsonObject1.optString("contractNumber"));
             isConstruction.setChecked("0".equals(jsonObject1.optString("isConstruction")) ? false : true);
@@ -469,11 +470,11 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
             isContainTax.setChecked("0".equals(jsonObject1.optString("isContainTax")) || "null".equals(jsonObject1.optString("isContainTax")) ? false : true);
             deposit.setText("null".equals(jsonObject1.optString("deposit")) ? "" : jsonObject1.optString("deposit"));
             assurance.setText("null".equals(jsonObject1.optString("assurance")) ? "" : jsonObject1.optString("assurance"));
-            assuranceDate.setText("null".equals(jsonObject1.optString("assuranceDate")) ? "" : jsonObject1.optString("assuranceDate"));
+            assuranceDate.setText("null".equals(jsonObject1.optString("assuranceDate")) ? "" : TimestampUtil.getCurrentTime(jsonObject1.optString("assuranceDate")));
             constructionAmount.setText("null".equals(jsonObject1.optString("constructionAmount")) ? "" : jsonObject1.optString("constructionAmount"));
             constructionAccount.setText("null".equals(jsonObject1.optString("constructionAccount")) ? "" : jsonObject1.optString("constructionAccount"));
             tail.setText("null".equals(jsonObject1.optString("tail")) ? "" : jsonObject1.optString("tail"));
-            tailDate.setText("null".equals(jsonObject1.optString("tailDate")) ? "" : jsonObject1.optString("tailDate"));
+            tailDate.setText("null".equals(jsonObject1.optString("tailDate")) ? "" : TimestampUtil.getCurrentTime(jsonObject1.optString("tailDate")));
             contractAmount.setText("null".equals(jsonObject1.optString("contractAmount")) ? "" : jsonObject1.optString("contractAmount"));
             checkOut();
         } catch (JSONException e){

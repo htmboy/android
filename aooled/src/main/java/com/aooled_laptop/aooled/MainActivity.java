@@ -1,6 +1,8 @@
 package com.aooled_laptop.aooled;
 
 import android.content.Intent;
+import android.content.res.TypedArray;
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -10,6 +12,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -41,6 +44,19 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+        Window window = getWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            findViewById(R.id.navTop).setBackgroundColor(window.getNavigationBarColor());
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            findViewById(R.id.navTop).setBackgroundColor(window.getColorMode());
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            findViewById(R.id.navTop).setBackgroundColor(window.getNavigationBarColor());
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            findViewById(R.id.navTop).setBackgroundColor(window.getNavigationBarDividerColor());
+        }
         initView();
         bundle = getIntent().getExtras();
         findViewById(R.id.add).setOnClickListener(this);
@@ -123,4 +139,37 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     }
 
 
+    public int getColorPrimary(){
+        TypedValue typedValue = new TypedValue();
+        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+        return typedValue.data;
+    }
+
+    public int getDarkColorPrimary(){
+        TypedValue typedValue = new  TypedValue();
+        getTheme().resolveAttribute(R.attr.colorPrimaryDark, typedValue, true);
+        return typedValue.data;
+    }
+
+    public int getColorAccent(){
+        TypedValue typedValue = new  TypedValue();
+        getTheme().resolveAttribute(R.attr.colorAccent, typedValue, true);
+        return typedValue.data;
+    }
+
+    public int getBackgroundColor(){
+        TypedArray array = getTheme().obtainStyledAttributes(new int[]{
+                android.R.attr.colorBackground,
+                android.R.attr.textColorPrimary,
+                android.R.attr.colorPrimary,
+                android.R.attr.colorPrimaryDark,
+                android.R.attr.colorAccent,
+        });
+        int backgroundColor = array.getColor(0, 0xFF00FF);
+        int textColor = array.getColor(1, 0xFF00FF);
+        int colorPrimary = array.getColor(2, getResources().getColor(R.color.colorPrimary));
+        int colorPrimaryDark = array.getColor(3, getResources().getColor(R.color.colorPrimaryDark));
+        int colorAccent = array.getColor(4, getResources().getColor(R.color.colorAccent));
+        return backgroundColor;
+    }
 }
