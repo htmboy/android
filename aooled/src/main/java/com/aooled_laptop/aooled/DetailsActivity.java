@@ -295,8 +295,8 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
                             TextView imageTitle = view.findViewById(R.id.imageTitle);
                             imageTitle.setText("图片名称：" + imageArray.getJSONObject(i).optString("imageTitle"));
 
-//                            TextView imageDescript = view.findViewById(R.id.imageDescript);
-//                            imageDescript.setText("图片描述：" + imageArray.getJSONObject(i).optString("imageDescript"));
+                            TextView imageDescript = view.findViewById(R.id.imageDescript);
+                            imageDescript.setText("图片描述：" + imageArray.getJSONObject(i).optString("imageDescript"));
 
                             TextView imageDate = view.findViewById(R.id.imageDate);
                             imageDate.setText("上传日期：" + TimestampUtil.getCurrentTime(imageArray.getJSONObject(i).optString("imageDate")));
