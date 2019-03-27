@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Window;
 import android.widget.CheckBox;
@@ -53,8 +54,12 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.order_add);
+        Toolbar toolbar = findViewById(R.id.toolbar_return);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setNavigationOnClickListener(this);
         Bundle bundle = getIntent().getExtras();
         id = bundle.getString("id");
         code = bundle.getString("code");
@@ -65,7 +70,6 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
         submit(false);
     }
     private void event(){
-        findViewById(R.id.back).setOnClickListener(this);
         findViewById(R.id.submit).setOnClickListener(this);
         isAssurance.setOnCheckedChangeListener(this);
         isConstruction.setOnCheckedChangeListener(this);
@@ -156,7 +160,7 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.back:
+            case -1:
                 finish();
                 break;
             case R.id.submit:

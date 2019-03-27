@@ -9,7 +9,10 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -49,23 +52,85 @@ import java.util.concurrent.Executors;
 import java.util.zip.Inflater;
 
 public class DetailsActivity extends AppCompatActivity implements View.OnClickListener {
-    TextView orderNumber, isDistribution, isSpecialOffer, fillDate, isSimpleOrder, contractNumber, isConstruction, isBorrowData, goodsCount, isAssurance, method;
-    TextView price, payer, alterAmount, isNoticeDelivery, sendTo, customer, contact, contactTel, recieptBank, isContainTax, deposit, assurance, assuranceDate, constructionAmount;
-    TextView constructionAccount, tail, tailDate, contractAmount, isAlterReciept;
-    LinearLayout linearLayout;
-    JSONArray imageArray;
+    private TextView orderNumber, isDistribution, isSpecialOffer, fillDate, isSimpleOrder, contractNumber, isConstruction, isBorrowData, goodsCount, isAssurance, method;
+    private TextView price, payer, alterAmount, isNoticeDelivery, sendTo, customer, contact, contactTel, recieptBank, isContainTax, deposit, assurance, assuranceDate, constructionAmount;
+    private TextView constructionAccount, tail, tailDate, contractAmount, isAlterReciept;
+    private LinearLayout linearLayout;
+    private JSONArray imageArray;
+    private String orderStatus = "";
     private Handler handler = new Handler();
+    MenuItem uploadOrder, editOrder, reUploadOrder, uploadDelivery, reUploadDelivery, modifyOrder;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.orderlist_details);
-        findViewById(R.id.back).setOnClickListener(this);
+        Toolbar toolbar = findViewById(R.id.toolbar_return);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setNavigationOnClickListener(this);
+
         initView();
         String str = getIntent().getExtras().getString("orderId");
         setData(str);
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.nav_menu, menu);
+        uploadOrder = menu.findItem(R.id.uploadOrder);
+        reUploadOrder = menu.findItem(R.id.reUploadOrder);
+        uploadDelivery = menu.findItem(R.id.uploadDelivery);
+        reUploadDelivery = menu.findItem(R.id.reUploadDelivery);
+        editOrder = menu.findItem(R.id.editOrder);
+        modifyOrder = menu.findItem(R.id.modifyOrder);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        switch (orderStatus){
+            case "14":
+                uploadOrder.setVisible(true);
+                editOrder.setVisible(true);
+                break;
+            case "16":
+                reUploadOrder.setVisible(true);
+                editOrder.setVisible(true);
+                break;
+            case "21":
+                reUploadOrder.setVisible(true);
+                editOrder.setVisible(true);
+                break;
+            case "22":
+                reUploadOrder.setVisible(true);
+                editOrder.setVisible(true);
+                break;
+            case "23":
+                break;
+            case "24":
+                break;
+            case "25":
+                break;
+            case "26":
+                break;
+            default:
+                break;
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+//    public void resetMenuItem(Menu menu){
+//        menu.findItem(R.id.uploadOrder).setVisible(false);
+//        menu.findItem(R.id.reUploadOrder).setVisible(false);
+//        menu.findItem(R.id.uploadDelivery).setVisible(false);
+//        menu.findItem(R.id.reUploadDelivery).setVisible(false);
+//        menu.findItem(R.id.editOrder).setVisible(false);
+//        menu.findItem(R.id.modifyOrder).setVisible(false);
+//    }
+
     public void initView(){
         linearLayout = findViewById(R.id.linearLayout);
         orderNumber = findViewById(R.id.orderNumber);
@@ -105,7 +170,6 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
 
 
 
-
     }
 
     @Override
@@ -138,6 +202,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
                         break;
                     case 1:
                         JSONObject jsonObject1 = jsonObject.optJSONObject("data");
+                        orderStatus = jsonObject1.optString("orderStatus");
                         orderNumber.setText(jsonObject1.optString("orderNumber"));
                         isDistribution.setText(jsonObject1.optString("isDistribution"));
                         isSpecialOffer.setText(jsonObject1.optString("isSpecialOffer"));
@@ -171,6 +236,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
                         contractAmount.setText(jsonObject1.optString("contractAmount"));
 
                         imageArray = jsonObject.optJSONArray("image");
+                        invalidateOptionsMenu();
                         new ImageAscynTask().start();
                         break;
                     default:

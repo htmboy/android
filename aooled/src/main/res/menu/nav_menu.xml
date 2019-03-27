@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/uploadOrder"
+        android:visible="false"
+        android:title="上传生产单"/>
+    <item
+        android:id="@+id/reUploadOrder"
+        android:visible="false"
+        android:title="重新上传生产单"/>
+    <item
+        android:id="@+id/uploadDelivery"
+        android:visible="false"
+        android:title="上传放行条"/>
+    <item
+        android:id="@+id/reUploadDelivery"
+        android:visible="false"
+        android:title="重新上传放行条"/>
+    <item
+        android:id="@+id/editOrder"
+        android:visible="false"
+        android:title="修改生产单信息"/>
+    <item
+        android:id="@+id/modifyOrder"
+        android:visible="false"
+        android:title="修改生产单"/>
+</menu>
