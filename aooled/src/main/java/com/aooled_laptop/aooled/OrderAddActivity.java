@@ -182,7 +182,7 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public void submit(boolean isSubmit){
-        Request<String> request = new StringRequest(Constants.URL_UPLOAD, RequestMethod.JSON);
+        Request<String> request = new StringRequest(Constants.URL_SUBMIT, RequestMethod.JSON);
         if (isSubmit) { // 提交数据
             request.add("code", "3");
             request.add("id", id);

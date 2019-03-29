@@ -1,5 +1,6 @@
 package com.aooled_laptop.aooled;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.GradientDrawable;
@@ -7,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -27,6 +29,7 @@ import com.aooled_laptop.aooled.error.TimeoutError;
 import com.aooled_laptop.aooled.error.URLError;
 import com.aooled_laptop.aooled.error.UnknowHostError;
 import com.aooled_laptop.aooled.model.Order;
+import com.aooled_laptop.aooled.task.FileBinary;
 import com.aooled_laptop.aooled.task.HttpListener;
 import com.aooled_laptop.aooled.task.Request;
 import com.aooled_laptop.aooled.task.RequestExecutor;
@@ -36,12 +39,14 @@ import com.aooled_laptop.aooled.task.StringRequest;
 import com.aooled_laptop.aooled.utils.Constants;
 import com.aooled_laptop.aooled.utils.Logger;
 import com.aooled_laptop.aooled.utils.TimestampUtil;
+import com.aooled_laptop.aooled.utils.UriToFilePath;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -51,7 +56,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.zip.Inflater;
 
-public class DetailsActivity extends AppCompatActivity implements View.OnClickListener {
+public class DetailsActivity extends AppCompatActivity implements View.OnClickListener, MenuItem.OnMenuItemClickListener {
     private TextView orderNumber, isDistribution, isSpecialOffer, fillDate, isSimpleOrder, contractNumber, isConstruction, isBorrowData, goodsCount, isAssurance, method;
     private TextView price, payer, alterAmount, isNoticeDelivery, sendTo, customer, contact, contactTel, recieptBank, isContainTax, deposit, assurance, assuranceDate, constructionAmount;
     private TextView constructionAccount, tail, tailDate, contractAmount, isAlterReciept;
@@ -59,6 +64,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     private JSONArray imageArray;
     private String orderStatus = "";
     private Handler handler = new Handler();
+    private String id, imagePath;
     MenuItem uploadOrder, editOrder, reUploadOrder, uploadDelivery, reUploadDelivery, modifyOrder;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,8 +77,8 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         toolbar.setNavigationOnClickListener(this);
 
         initView();
-        String str = getIntent().getExtras().getString("orderId");
-        setData(str);
+        id = getIntent().getExtras().getString("orderId");
+        setData("");
 
     }
 
@@ -81,6 +87,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.nav_menu, menu);
         uploadOrder = menu.findItem(R.id.uploadOrder);
+        uploadOrder.setOnMenuItemClickListener(this);
         reUploadOrder = menu.findItem(R.id.reUploadOrder);
         uploadDelivery = menu.findItem(R.id.uploadDelivery);
         reUploadDelivery = menu.findItem(R.id.reUploadDelivery);
@@ -121,15 +128,6 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         }
         return super.onPrepareOptionsMenu(menu);
     }
-
-//    public void resetMenuItem(Menu menu){
-//        menu.findItem(R.id.uploadOrder).setVisible(false);
-//        menu.findItem(R.id.reUploadOrder).setVisible(false);
-//        menu.findItem(R.id.uploadDelivery).setVisible(false);
-//        menu.findItem(R.id.reUploadDelivery).setVisible(false);
-//        menu.findItem(R.id.editOrder).setVisible(false);
-//        menu.findItem(R.id.modifyOrder).setVisible(false);
-//    }
 
     public void initView(){
         linearLayout = findViewById(R.id.linearLayout);
@@ -177,11 +175,31 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         finish();
     }
 
-    public void setData(String id){
-        Request<String> request = new StringRequest(Constants.URL_UPLOAD, RequestMethod.JSON);
-        request.add("code", 22);
+    public void setData(String mark){
+        RequestMethod requestMethod;
+        String requestAddress;
+        if("14".equals(mark)) {
+            requestMethod = RequestMethod.POST;
+            requestAddress = Constants.URL_UPLOAD;
+        }
+        else {
+            requestMethod = RequestMethod.JSON;
+            requestAddress = Constants.URL_SUBMIT;
+        }
+        Request<String> request = new StringRequest(requestAddress, requestMethod);
+
         request.add("orderId", id);
-//        orders = new ArrayList<Order>();
+        switch(mark){
+            case "14":
+                request.add("code", 32);
+                request.add("image", new FileBinary(new File(imagePath)));
+                break;
+            default:
+                request.add("code", 22);
+                break;
+        }
+
+
         RequestExecutor.INTANCE.execute(request, new HttpListener<String>() {
             @Override
             public void onSucceed(Response<String> response) {
@@ -193,7 +211,6 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
                 try {
                     jsonObject = new JSONObject(str);
                     code = (int) jsonObject.opt("code");
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -239,6 +256,10 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
                         invalidateOptionsMenu();
                         new ImageAscynTask().start();
                         break;
+                    case 2:
+                        Toast.makeText(DetailsActivity.this, "上传成功", Toast.LENGTH_SHORT).show();
+                        finish();
+                        break;
                     default:
                         break;
                 }
@@ -263,26 +284,6 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         });
     }
 
-    private void loadImage(JSONArray jsonArray){
-        for(int i = 0; i < jsonArray.length(); i++){
-            ImageView imageView = new ImageView(this);
-
-            try {
-//                Logger.i(Constants.URL_IMAGE + "/storage/uploads/" + jsonArray.getJSONObject(i).optString("imageName"));
-//                imageView.setMaxWidth(300);
-//                imageView.setMaxHeight(900);
-//                imageView.setScaleType(ImageView.ScaleType.CENTER);
-//                imageView.setAdjustViewBounds(true);
-
-                getImage(Constants.URL_IMAGE + "/storage/uploads/" + jsonArray.getJSONObject(i).optString("imageName"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-        }
-
-    }
-
     private Bitmap getImage(String urlString){
         Bitmap bitmap;
         InputStream is = null;
@@ -305,36 +306,38 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         return null;
     }
 
-    // 加载图片
-    private void loadOriginalSize(ImageView img){
-        String sdcard = Environment.getDownloadCacheDirectory().getPath();
-        String filePath = sdcard + "/11.jpg";
-        Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-        img.setImageBitmap(bitmap);
-    }
-    // 压缩图片
-    private void testPicOptimize(ImageView img){
-        String sdcard = Environment.getDownloadCacheDirectory().getPath();
-        String filePath = sdcard + "/11.jpg";
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(filePath, options);
-        int width = options.outWidth;
-        options.inSampleSize = width / 200;
-        options.inPreferredConfig = Bitmap.Config.RGB_565;
-        options.inJustDecodeBounds = false;
-        Bitmap bitmap = BitmapFactory.decodeFile(filePath, options);
-        img.setImageBitmap(bitmap);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 100){
+            if (resultCode == RESULT_OK ){
+                imagePath = UriToFilePath.handleImageOnKitkat(this,data);
+                if(imagePath == null)
+                    Toast.makeText(this, "选择图片失败", Toast.LENGTH_LONG).show();
+                else {
+                    Toast.makeText(this, "选择图片成功", Toast.LENGTH_LONG).show();
+                    setData("14");
+                }
+            }
+        }
     }
 
-    private void testInBitmap(ImageView secondImg, Bitmap bitmap){
-        String sdcard = Environment.getDownloadCacheDirectory().getPath();
-        String filePath = sdcard + "/11.jpg";
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        // 第二张图片复用了第一张图片的内存
-        options.inBitmap = bitmap;
-        Bitmap mBitmap = BitmapFactory.decodeFile(filePath, options);
-        secondImg.setImageBitmap(mBitmap);
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.uploadOrder:
+                Intent albumIntent= new Intent(Intent.ACTION_PICK, null);
+                albumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                this.startActivityForResult(albumIntent, 100);
+                break;
+            case R.id.reUploadOrder:
+                albumIntent= new Intent(Intent.ACTION_PICK, null);
+                albumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                this.startActivityForResult(albumIntent, 100);
+                break;
+            default:
+                break;
+        }
+        return true;
     }
 
     class ImageAscynTask extends Thread {
@@ -344,9 +347,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
             final List<Bitmap> bitmaps = new ArrayList<Bitmap>();
             for(int i = 0; i < imageArray.length(); i++){
                 try {
-//                    imageView.setImageBitmap(getImage(Constants.URL_IMAGE + "/storage/uploads/" + jsonArrays[0].getJSONObject(i).optString("imageName")));
                     bitmaps.add(i, getImage(Constants.URL_IMAGE + "/storage/uploads/" + imageArray.getJSONObject(i).optString("imageName")));
-//                    imageView.setVisibility(View.VISIBLE);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

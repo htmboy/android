@@ -66,7 +66,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void login(){
 
-        Request<String> request = new StringRequest(Constants.URL_UPLOAD, RequestMethod.JSON);
+        Request<String> request = new StringRequest(Constants.URL_SUBMIT, RequestMethod.JSON);
         request.add("username", username);
         request.add("password", MD5Util.getMD5(password));
         request.add("code", 1);

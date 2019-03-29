@@ -106,7 +106,7 @@ public class OrderListFragment extends Fragment implements SwipeRefreshLayout.On
         return view;
     }
     public void dataResourcePage(){
-        Request<String> request = new StringRequest(Constants.URL_UPLOAD, RequestMethod.JSON);
+        Request<String> request = new StringRequest(Constants.URL_SUBMIT, RequestMethod.JSON);
         request.add("id", getArguments().getString("id"));
         request.add("code", 21);
         request.add("page", currentPage);

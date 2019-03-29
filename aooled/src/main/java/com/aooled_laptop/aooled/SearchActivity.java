@@ -123,7 +123,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     public void submitData(final boolean mark){
-        Request<String> request = new StringRequest(Constants.URL_UPLOAD, RequestMethod.JSON);
+        Request<String> request = new StringRequest(Constants.URL_SUBMIT, RequestMethod.JSON);
         request.add("id", id);
         request.add("code", 4);
         request.add("page", currentPage);
