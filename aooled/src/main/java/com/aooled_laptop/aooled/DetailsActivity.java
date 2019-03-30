@@ -12,6 +12,8 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -65,6 +67,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     private String orderStatus = "";
     private Handler handler = new Handler();
     private String id, imagePath;
+    private String code;
     MenuItem uploadOrder, editOrder, reUploadOrder, uploadDelivery, reUploadDelivery, modifyOrder;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,6 +81,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
 
         initView();
         id = getIntent().getExtras().getString("orderId");
+        code = getIntent().getExtras().getString("code");
         setData("");
 
     }
@@ -168,6 +172,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
 
 
 
+
     }
 
     @Override
@@ -193,6 +198,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
             case "14":
                 request.add("code", 32);
                 request.add("image", new FileBinary(new File(imagePath)));
+                request.add("mark", code);
                 break;
             default:
                 request.add("code", 22);
@@ -261,6 +267,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
                         finish();
                         break;
                     default:
+                        Toast.makeText(DetailsActivity.this, "未知错误", Toast.LENGTH_SHORT).show();
                         break;
                 }
             }
@@ -339,6 +346,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         }
         return true;
     }
+
 
     class ImageAscynTask extends Thread {
 

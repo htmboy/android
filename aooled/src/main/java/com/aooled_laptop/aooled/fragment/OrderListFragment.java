@@ -68,7 +68,7 @@ public class OrderListFragment extends Fragment implements SwipeRefreshLayout.On
         View view = inflater.inflate(R.layout.orderlist, container, false);
         listView = view.findViewById(R.id.listView);
         swipeRefreshLayout = view.findViewById(R.id.swipe);
-        Bundle bundle = getArguments();
+        final Bundle bundle = getArguments();
         totalItem = bundle.getInt("totalItem");
         dataResource(getArguments().getString("orders"));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -76,6 +76,7 @@ public class OrderListFragment extends Fragment implements SwipeRefreshLayout.On
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Bundle bundleItem = new Bundle();
                 bundleItem.putString("orderId", orders.get(position).getId());
+                bundleItem.putString("code", bundle.getString("code"));
                 Intent intent = new Intent(getActivity(), DetailsActivity.class);
                 intent.putExtras(bundleItem);
                 startActivity(intent);

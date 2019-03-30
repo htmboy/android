@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.Window;
 import android.widget.CheckBox;
@@ -40,7 +42,7 @@ import org.json.JSONObject;
 import java.util.Calendar;
 import java.util.HashMap;
 
-public class OrderAddActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, DatePicker.OnDateChangedListener {
+public class OrderAddActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, DatePicker.OnDateChangedListener, TextWatcher {
     private EditText contractNumber, goodsCount, method, price, payer, customer;
     private EditText alterAmount, sendTo, contact, contactTel, recieptBank, contractAmount, deposit;
     private EditText assurance, constructionAmount, constructionAccount;
@@ -78,6 +80,8 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
 
         tailDate.setOnClickListener(this);
         assuranceDate.setOnClickListener(this);
+        contractAmount.addTextChangedListener(this);
+        deposit.addTextChangedListener(this);
     }
 
     private void init(){
@@ -255,93 +259,132 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
 //            return false;
         order.setOrderNumber(getData(orderNumber));
 
-        if ("".equals(getData(fillDate)) || getData(fillDate) == null)
-            return false;
+//        if ("".equals(getData(fillDate)) || getData(fillDate) == null){
+//            Toast.makeText(this, "请填写", Toast.LENGTH_SHORT).show();
+//            return false;
+//        }
+
         order.setFillDate(getData(fillDate));
 
-        if ("".equals(getData(contractNumber)) || getData(contractNumber) == null)
+        if ("".equals(getData(contractNumber)) || getData(contractNumber) == null){
+            Toast.makeText(this, "请填写合同号", Toast.LENGTH_SHORT).show();
             return false;
+        }
         order.setContractNumber(getData(contractNumber));
 
-        if ("".equals(getData(goodsCount)) || getData(goodsCount) == null)
+        if ("".equals(getData(goodsCount)) || getData(goodsCount) == null){
+            Toast.makeText(this, "请填写货物数量", Toast.LENGTH_SHORT).show();
             return false;
+        }
         order.setGoodsCount(getData(goodsCount));
 
-        if ("".equals(getData(method)) || getData(method) == null)
+        if ("".equals(getData(method)) || getData(method) == null){
+            Toast.makeText(this, "请填写发货方式", Toast.LENGTH_SHORT).show();
             return false;
+        }
         order.setMethod(getData(method));
 
-        if ("".equals(getData(price)) || getData(price) == null)
+        if ("".equals(getData(price)) || getData(price) == null){
+            Toast.makeText(this, "请填写发货价格", Toast.LENGTH_SHORT).show();
             return false;
+        }
         order.setExpressPrice(getData(price));
 
-        if ("".equals(getData(payer)) || getData(payer) == null)
+        if ("".equals(getData(payer)) || getData(payer) == null){
+            Toast.makeText(this, "请填写邮费支付方式", Toast.LENGTH_SHORT).show();
             return false;
+        }
         order.setPayer(getData(payer));
 
-        if ("".equals(getData(customer)) || getData(customer) == null)
+        if ("".equals(getData(customer)) || getData(customer) == null){
+            Toast.makeText(this, "请填写公司名称", Toast.LENGTH_SHORT).show();
             return false;
+        }
         order.setCustomerCompany(getData(customer));
 
         if (getData(isAlterReciept)) {
-            if ("".equals(getData(alterAmount)) || getData(alterAmount) == null)
+            if ("".equals(getData(alterAmount)) || getData(alterAmount) == null){
+                Toast.makeText(this, "请填写代收金额", Toast.LENGTH_SHORT).show();
                 return false;
+            }
             order.setAlterAmount(getData(alterAmount));
         }
 
-        if ("".equals(getData(sendTo)) || getData(sendTo) == null)
+        if ("".equals(getData(sendTo)) || getData(sendTo) == null){
+            Toast.makeText(this, "请填写收货地址", Toast.LENGTH_SHORT).show();
             return false;
+        }
         order.setSendTo(getData(sendTo));
 
-        if ("".equals(getData(contact)) || getData(contact) == null)
+        if ("".equals(getData(contact)) || getData(contact) == null){
+            Toast.makeText(this, "请填写联系人", Toast.LENGTH_SHORT).show();
             return false;
+        }
         order.setContact(getData(contact));
 
-        if ("".equals(getData(contactTel)) || getData(contactTel) == null)
+        if ("".equals(getData(contactTel)) || getData(contactTel) == null){
+            Toast.makeText(this, "请填写联系电话", Toast.LENGTH_SHORT).show();
             return false;
+        }
         order.setContactTel(getData(contactTel));
 
-        if ("".equals(getData(recieptBank)) || getData(recieptBank) == null)
+        if ("".equals(getData(recieptBank)) || getData(recieptBank) == null){
+            Toast.makeText(this, "请填写收款银行", Toast.LENGTH_SHORT).show();
             return false;
+        }
         order.setRecieptBank(getData(recieptBank));
 
-        if ("".equals(getData(contractAmount)) || getData(contractAmount) == null)
+        if ("".equals(getData(contractAmount)) || getData(contractAmount) == null){
+            Toast.makeText(this, "请填写合同金额", Toast.LENGTH_SHORT).show();
             return false;
+        }
         order.setContractAmount(getData(contractAmount));
 
-        if ("".equals(getData(deposit)) || getData(deposit) == null)
+        if ("".equals(getData(deposit)) || getData(deposit) == null){
+            Toast.makeText(this, "请填写定金", Toast.LENGTH_SHORT).show();
             return false;
+        }
         order.setDeposit(getData(deposit));
 
-        if ("".equals(getData(tail)) || getData(tail) == null)
-            return false;
-        order.setTail(getData(tail));
+//        if ("".equals(getData(tail)) || getData(tail) == null)
+//            return false;
+//        order.setTail(getData(tail));
 
-        if ("".equals(getData(tailDate)) || getData(tailDate) == null)
+        if ("".equals(getData(tailDate)) || getData(tailDate) == null){
+            Toast.makeText(this, "请选择收款日期", Toast.LENGTH_SHORT).show();
             return false;
+        }
         order.setTailDate(getData(tailDate));
 
         if (getData(isAssurance)) {
-            if ("".equals(getData(assurance)) || getData(assurance) == null)
+            if ("".equals(getData(assurance)) || getData(assurance) == null){
+                Toast.makeText(this, "请填写质保金", Toast.LENGTH_SHORT).show();
                 return false;
+            }
             order.setAssurance(getData(assurance));
         }
 
         if (getData(isAssurance)) {
-            if ("".equals(getData(assuranceDate)) || getData(assuranceDate) == null)
+            if ("".equals(getData(assuranceDate)) || getData(assuranceDate) == null){
+                Toast.makeText(this, "请选择质保金收取时间", Toast.LENGTH_SHORT).show();
                 return false;
+            }
             order.setAssuranceDate(getData(assuranceDate));
         }
 
         if (getData(isConstruction)) {
-            if ("".equals(getData(constructionAmount)) || getData(constructionAmount) == null)
+            if ("".equals(getData(constructionAmount)) || getData(constructionAmount) == null){
+                Toast.makeText(this, "请填写施工款", Toast.LENGTH_SHORT).show();
                 return false;
+            }
             order.setContractAmount(getData(constructionAmount));
         }
 
         if (getData(isConstruction)) {
-            if ("".equals(getData(constructionAccount)) || getData(constructionAccount) == null)
+            if ("".equals(getData(constructionAccount)) || getData(constructionAccount) == null){
+                Toast.makeText(this, "请填写施工款账号", Toast.LENGTH_SHORT).show();
                 return false;
+            }
             order.setConstructionAccount(getData(constructionAccount));
         }
         order.setDistribution(getData(isDistribution));
@@ -397,6 +440,27 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
         }
 
         return checkBox.isChecked();
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+//        Toast.makeText(this, String.valueOf(Float.valueOf(contractAmount.getText().toString())), Toast.LENGTH_SHORT).show();
+        float amount = "".equals(contractAmount.getText().toString()) ? 0 : Float.valueOf(contractAmount.getText().toString());
+        float sit = "".equals(deposit.getText().toString()) ? 0 : Float.valueOf(deposit.getText().toString());
+        if (amount == 0 || sit >= amount)
+            tail.setText("0");
+        else
+            tail.setText(String.valueOf(amount - sit));
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
     }
 
     public void showAlertDialog(TextView id){
