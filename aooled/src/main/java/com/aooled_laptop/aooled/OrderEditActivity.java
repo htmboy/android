@@ -1,16 +1,19 @@
 package com.aooled_laptop.aooled;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
@@ -31,18 +34,14 @@ import com.aooled_laptop.aooled.task.Response;
 import com.aooled_laptop.aooled.task.StringRequest;
 import com.aooled_laptop.aooled.utils.Constants;
 import com.aooled_laptop.aooled.utils.Logger;
-import com.aooled_laptop.aooled.utils.MD5Util;
-import com.aooled_laptop.aooled.utils.SaveInfoUtils;
 import com.aooled_laptop.aooled.utils.TimestampUtil;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Calendar;
-import java.util.HashMap;
 
-public class OrderAddActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, DatePicker.OnDateChangedListener, TextWatcher {
+public class OrderEditActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, DatePicker.OnDateChangedListener, TextWatcher {
     private EditText contractNumber, goodsCount, method, price, payer, customer;
     private EditText alterAmount, sendTo, contact, contactTel, recieptBank, contractAmount, deposit;
     private EditText assurance, constructionAmount, constructionAccount;
@@ -51,8 +50,9 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
     private int year, month, day;
     private StringBuffer date = new StringBuffer();
     private Order order = new Order();
-    private String id;
+    private String orderId;
     private String code;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,15 +62,16 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar.setNavigationOnClickListener(this);
-        Bundle bundle = getIntent().getExtras();
-        id = bundle.getString("id");
+        Bundle bundle = getIntent().getExtras();;
+        orderId = bundle.getString("orderId");
         code = bundle.getString("code");
         init();
         checkOut();
         event();
         initDateTime();
-        submit(false);
+        dealResponse(bundle.getString("data"));
     }
+
     private void event(){
         findViewById(R.id.submit).setOnClickListener(this);
         isAssurance.setOnCheckedChangeListener(this);
@@ -187,15 +188,9 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
 
     public void submit(boolean isSubmit){
         Request<String> request = new StringRequest(Constants.URL_SUBMIT, RequestMethod.JSON);
-        if (isSubmit) { // 提交数据
-            request.add("code", "3");
-            request.add("id", id);
-            request.add("data", order.toJson());
-        }else{ // 初始化数据
-            request.add("code", "31");
-            request.add("id", id);
-            request.add("mark", code);
-        }
+        request.add("code", "33");
+        request.add("orderId", orderId);
+        request.add("data", order.toJson());
         RequestExecutor.INTANCE.execute(request, new HttpListener<String>() {
 
             @Override
@@ -213,18 +208,18 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
                 }
                 switch (code){
                     case 0:
-                        Toast.makeText(OrderAddActivity.this, "数据错误, 请联系管理员", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(OrderEditActivity.this, "数据错误, 请联系管理员", Toast.LENGTH_SHORT).show();
                         break;
                     case 1: // 提交数据反馈
-                        Toast.makeText(OrderAddActivity.this, "提交成功", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(OrderEditActivity.this, "提交成功", Toast.LENGTH_SHORT).show();
                         finish();
                         break;
                     case 2: // 初始化找到记录时, 处理记录的数据
-                        Toast.makeText(OrderAddActivity.this, "有未处理的记录", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(OrderEditActivity.this, "有未处理的记录", Toast.LENGTH_SHORT).show();
                         dealResponse(jsonObject.optString("data"));
                         break;
                     case 3: // 初始化没有找到记录, 则生成订单号
-                        Toast.makeText(OrderAddActivity.this, "无记录", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(OrderEditActivity.this, "无记录", Toast.LENGTH_SHORT).show();
                         orderNumber.setText(jsonObject.optString("orderNumber"));
                         fillDate.setText(TimestampUtil.getCurrentTime(jsonObject.optString("fillDate")));
                         break;
@@ -253,7 +248,7 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public boolean submitData(){
-        order.setId(id);
+        order.setId(orderId);
         order.setCode(code);
 //        if ("".equals(getData(orderNumber)) || getData(orderNumber) == null)
 //            return false;
@@ -511,23 +506,23 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
             JSONObject jsonObject1 = new JSONObject(response);
             // 基本信息
             orderNumber.setText(jsonObject1.optString("orderNumber"));
-            isDistribution.setChecked("1".equals(jsonObject1.optString("isDistribution")) ? true : false);
-            isSpecialOffer.setChecked("1".equals(jsonObject1.optString("isSpecialOffer")) ? true : false);
+            isDistribution.setChecked("0".equals(jsonObject1.optString("isDistribution")) ? false : true);
+            isSpecialOffer.setChecked("0".equals(jsonObject1.optString("isSpecialOffer")) ? false : true);
             fillDate.setText(TimestampUtil.getCurrentTime(jsonObject1.optString("fillDate")));
-            isSimpleOrder.setChecked("1".equals(jsonObject1.optString("isSimpleOrder")) ? true : false);
+            isSimpleOrder.setChecked("0".equals(jsonObject1.optString("isSimpleOrder")) ? false : true);
             contractNumber.setText(jsonObject1.optString("contractNumber"));
-            isConstruction.setChecked("1".equals(jsonObject1.optString("isConstruction")) ? true : false);
-            isBorrowData.setChecked("1".equals(jsonObject1.optString("isBorrowData")) ? true : false);
+            isConstruction.setChecked("0".equals(jsonObject1.optString("isConstruction")) ? false : true);
+            isBorrowData.setChecked("0".equals(jsonObject1.optString("isBorrowData")) ? false : true);
             goodsCount.setText(jsonObject1.optString("goodsCount"));
-            isAssurance.setChecked("1".equals(jsonObject1.optString("isAssurance")) ? true : false);
+            isAssurance.setChecked("0".equals(jsonObject1.optString("isAssurance")) ? false : true);
 
             // 发货信息
             method.setText("null".equals(jsonObject1.optString("method")) ? "" : jsonObject1.optString("method"));
             price.setText("null".equals(jsonObject1.optString("price")) ? "" : jsonObject1.optString("price"));
-            payer.setText("1".equals(jsonObject1.optString("payer")) ? "到付" : "寄付");
-            isAlterReciept.setChecked("1".equals(jsonObject1.optString("isAlterReciept")) ? true : false);
+            payer.setText("null".equals(jsonObject1.optString("payer")) ? "" : jsonObject1.optString("payer"));
+            isAlterReciept.setChecked("0".equals(jsonObject1.optString("isAlterReciept")) || "null".equals(jsonObject1.optString("isAlterReciept")) ? false : true);
             alterAmount.setText("null".equals(jsonObject1.optString("alterAmount")) ? "" : jsonObject1.optString("alterAmount"));
-            isNoticeDelivery.setChecked("1".equals(jsonObject1.optString("isNoticeDelivery")) ? true : false);
+            isNoticeDelivery.setChecked("0".equals(jsonObject1.optString("isNoticeDelivery")) || "null".equals(jsonObject1.optString("isNoticeDelivery")) ? false : true);
             sendTo.setText("null".equals(jsonObject1.optString("sendTo")) ? "" : jsonObject1.optString("sendTo"));
             customer.setText("null".equals(jsonObject1.optString("customer")) ? "" : jsonObject1.optString("customer"));
             contact.setText("null".equals(jsonObject1.optString("contact")) ? "" : jsonObject1.optString("contact"));
@@ -535,14 +530,14 @@ public class OrderAddActivity extends AppCompatActivity implements View.OnClickL
 
             // 收款信息
             recieptBank.setText("null".equals(jsonObject1.optString("recieptBank")) ? "" : jsonObject1.optString("recieptBank"));
-            isContainTax.setChecked("1".equals(jsonObject1.optString("isContainTax")) ? true : false);
+            isContainTax.setChecked("0".equals(jsonObject1.optString("isContainTax")) || "null".equals(jsonObject1.optString("isContainTax")) ? false : true);
             deposit.setText("null".equals(jsonObject1.optString("deposit")) ? "" : jsonObject1.optString("deposit"));
             assurance.setText("null".equals(jsonObject1.optString("assurance")) ? "" : jsonObject1.optString("assurance"));
             assuranceDate.setText("null".equals(jsonObject1.optString("assuranceDate")) ? "" : TimestampUtil.getCurrentTime(jsonObject1.optString("assuranceDate")));
             constructionAmount.setText("null".equals(jsonObject1.optString("constructionAmount")) ? "" : jsonObject1.optString("constructionAmount"));
             constructionAccount.setText("null".equals(jsonObject1.optString("constructionAccount")) ? "" : jsonObject1.optString("constructionAccount"));
-            tail.setText("0".equals(jsonObject1.optString("tail")) ? "" : jsonObject1.optString("tail"));
-            tailDate.setText("0".equals(jsonObject1.optString("tailDate")) ? "" : TimestampUtil.getCurrentTime(jsonObject1.optString("tailDate")));
+            tail.setText("null".equals(jsonObject1.optString("tail")) ? "" : jsonObject1.optString("tail"));
+            tailDate.setText("null".equals(jsonObject1.optString("tailDate")) ? "" : TimestampUtil.getCurrentTime(jsonObject1.optString("tailDate")));
             contractAmount.setText("null".equals(jsonObject1.optString("contractAmount")) ? "" : jsonObject1.optString("contractAmount"));
             checkOut();
         } catch (JSONException e){

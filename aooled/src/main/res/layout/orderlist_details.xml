@@ -7,7 +7,7 @@
     <include layout="@layout/nav_return"/>
 
     <ScrollView
-
+        android:id="@+id/orderDetailsScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
@@ -192,6 +192,13 @@
                     android:layout_height="wrap_content"
                     android:text=""/>
             </LinearLayout>
+            <TextView
+                android:id="@+id/errorLog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_weight="1"
+                android:textColor="@color/colorAccent"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

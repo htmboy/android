@@ -10,6 +10,8 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -61,14 +63,17 @@ import java.util.zip.Inflater;
 public class DetailsActivity extends AppCompatActivity implements View.OnClickListener, MenuItem.OnMenuItemClickListener {
     private TextView orderNumber, isDistribution, isSpecialOffer, fillDate, isSimpleOrder, contractNumber, isConstruction, isBorrowData, goodsCount, isAssurance, method;
     private TextView price, payer, alterAmount, isNoticeDelivery, sendTo, customer, contact, contactTel, recieptBank, isContainTax, deposit, assurance, assuranceDate, constructionAmount;
-    private TextView constructionAccount, tail, tailDate, contractAmount, isAlterReciept;
+    private TextView constructionAccount, tail, tailDate, contractAmount, isAlterReciept, errorLog;
     private LinearLayout linearLayout;
     private JSONArray imageArray;
     private String orderStatus = "";
     private Handler handler = new Handler();
-    private String id, imagePath;
+    private String orderId, imagePath;
     private String code;
-    MenuItem uploadOrder, editOrder, reUploadOrder, uploadDelivery, reUploadDelivery, modifyOrder;
+    private MenuItem uploadOrder, editOrder, reUploadOrder, uploadDelivery, reUploadDelivery, modifyOrder;
+    private JSONObject jsonObject1;
+    FragmentManager manager;
+    FragmentTransaction transaction;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,10 +85,12 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         toolbar.setNavigationOnClickListener(this);
 
         initView();
-        id = getIntent().getExtras().getString("orderId");
+        orderId = getIntent().getExtras().getString("orderId");
         code = getIntent().getExtras().getString("code");
         setData("");
 
+        manager = getSupportFragmentManager();
+        transaction = manager.beginTransaction();
     }
 
     @Override
@@ -93,39 +100,74 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         uploadOrder = menu.findItem(R.id.uploadOrder);
         uploadOrder.setOnMenuItemClickListener(this);
         reUploadOrder = menu.findItem(R.id.reUploadOrder);
+        reUploadOrder.setOnMenuItemClickListener(this);
         uploadDelivery = menu.findItem(R.id.uploadDelivery);
+        uploadDelivery.setOnMenuItemClickListener(this);
         reUploadDelivery = menu.findItem(R.id.reUploadDelivery);
+        reUploadDelivery.setOnMenuItemClickListener(this);
         editOrder = menu.findItem(R.id.editOrder);
+        editOrder.setOnMenuItemClickListener(this);
         modifyOrder = menu.findItem(R.id.modifyOrder);
+        modifyOrder.setOnMenuItemClickListener(this);
         return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         switch (orderStatus){
-            case "14":
+            case "14": // 上传生产单
                 uploadOrder.setVisible(true);
                 editOrder.setVisible(true);
                 break;
-            case "16":
+            case "16": // 录入信息有误
                 reUploadOrder.setVisible(true);
                 editOrder.setVisible(true);
                 break;
-            case "21":
+            case "21": // 第一审核
                 reUploadOrder.setVisible(true);
                 editOrder.setVisible(true);
                 break;
-            case "22":
+            case "22": // 第二审核
                 reUploadOrder.setVisible(true);
                 editOrder.setVisible(true);
                 break;
-            case "23":
+            case "23": // 放行条一审
                 break;
-            case "24":
+            case "24": // 放行条二审
                 break;
-            case "25":
+            case "25": // 生产单一审
                 break;
-            case "26":
+            case "26": // 生产单二审
+                break;
+            case "31": // 生产单信息有误
+                break;
+            case "32": // 生产单修改申请
+                break;
+            case "33": // 生产单修改
+                break;
+            case "34": // 上传新的生产单
+                break;
+            case "41": // 上传放行条
+                uploadDelivery.setVisible(true);
+                break;
+            case "42": // 放行条有误
+                reUploadDelivery.setVisible(true);
+                break;
+            case "51": // 放行条信息有误
+                reUploadDelivery.setVisible(true);
+                break;
+            case "61": // 等待发货及收款
+                break;
+            case "62": // 收款中
+                break;
+            case "63": // 发货中
+                uploadDelivery.setVisible(true);
+                break;
+            case "64": // 等待发放提成
+                break;
+            case "71": // 已发放提成
+                break;
+            case "81": // 修改已完成的订单
                 break;
             default:
                 break;
@@ -170,7 +212,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         tailDate = findViewById(R.id.tailDate);
         contractAmount = findViewById(R.id.contractAmount);
 
-
+        errorLog = findViewById(R.id.errorLog);
 
 
     }
@@ -183,7 +225,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
     public void setData(String mark){
         RequestMethod requestMethod;
         String requestAddress;
-        if("14".equals(mark)) {
+        if("14".equals(mark) || "15".equals(mark)) {
             requestMethod = RequestMethod.POST;
             requestAddress = Constants.URL_UPLOAD;
         }
@@ -193,10 +235,15 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
         }
         Request<String> request = new StringRequest(requestAddress, requestMethod);
 
-        request.add("orderId", id);
+        request.add("orderId", orderId);
         switch(mark){
-            case "14":
+            case "14":// 上传生产单
                 request.add("code", 32);
+                request.add("image", new FileBinary(new File(imagePath)));
+                request.add("mark", code);
+                break;
+            case "15": // 修改生产单图片
+                request.add("code", 34);
                 request.add("image", new FileBinary(new File(imagePath)));
                 request.add("mark", code);
                 break;
@@ -224,7 +271,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
                     case 0: Toast.makeText(DetailsActivity.this, "网络错误", Toast.LENGTH_SHORT).show();
                         break;
                     case 1:
-                        JSONObject jsonObject1 = jsonObject.optJSONObject("data");
+                        jsonObject1 = jsonObject.optJSONObject("data");
                         orderStatus = jsonObject1.optString("orderStatus");
                         orderNumber.setText(jsonObject1.optString("orderNumber"));
                         isDistribution.setText(jsonObject1.optString("isDistribution"));
@@ -236,10 +283,10 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
                         isBorrowData.setText(jsonObject1.optString("isBorrowData"));
                         goodsCount.setText(jsonObject1.optString("goodsCount"));
                         isAssurance.setText(jsonObject1.optString("isAssurance"));
+                        // 发货信息
                         method.setText(jsonObject1.optString("method"));
                         price.setText(jsonObject1.optString("price"));
-                        payer.setText(jsonObject1.optString("payer"));
-
+                        payer.setText("1".equals(jsonObject1.optString("payer")) ? "到付" : "寄付");
                         isAlterReciept.setText(jsonObject1.optString("isAlterReciept"));
                         alterAmount.setText(jsonObject1.optString("alterAmount"));
                         isNoticeDelivery.setText(jsonObject1.optString("isNoticeDelivery"));
@@ -247,6 +294,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
                         customer.setText(jsonObject1.optString("customer"));
                         contact.setText(jsonObject1.optString("contact"));
                         contactTel.setText(jsonObject1.optString("contactTel"));
+                        // 收款信息
                         recieptBank.setText(jsonObject1.optString("recieptBank"));
                         isContainTax.setText(jsonObject1.optString("isContainTax"));
                         deposit.setText(jsonObject1.optString("deposit"));
@@ -257,7 +305,10 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
                         tail.setText(jsonObject1.optString("tail"));
                         tailDate.setText("0".equals(jsonObject1.optString("tailDate")) ? "/" : TimestampUtil.getCurrentTime(jsonObject1.optString("tailDate")));
                         contractAmount.setText(jsonObject1.optString("contractAmount"));
-
+                        if("16".equals(orderStatus)){
+                            errorLog.setText("错误信息: " + jsonObject1.optString("errorLog"));
+                            errorLog.setVisibility(View.VISIBLE);
+                        }
                         imageArray = jsonObject.optJSONArray("image");
                         invalidateOptionsMenu();
                         new ImageAscynTask().start();
@@ -315,15 +366,16 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 100){
-            if (resultCode == RESULT_OK ){
-                imagePath = UriToFilePath.handleImageOnKitkat(this,data);
-                if(imagePath == null)
-                    Toast.makeText(this, "选择图片失败", Toast.LENGTH_LONG).show();
-                else {
-                    Toast.makeText(this, "选择图片成功", Toast.LENGTH_LONG).show();
+        if (resultCode == RESULT_OK ){
+            imagePath = UriToFilePath.handleImageOnKitkat(this,data);
+            if(imagePath == null)
+                Toast.makeText(this, "选择图片失败", Toast.LENGTH_SHORT).show();
+            else {
+//                    Toast.makeText(this, "选择图片成功", Toast.LENGTH_SHORT).show();
+                if(requestCode == 14)
                     setData("14");
-                }
+                else if (requestCode == 15)
+                    setData("15");
             }
         }
     }
@@ -334,18 +386,34 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.uploadOrder:
                 Intent albumIntent= new Intent(Intent.ACTION_PICK, null);
                 albumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                this.startActivityForResult(albumIntent, 100);
+                this.startActivityForResult(albumIntent, 14);
                 break;
             case R.id.reUploadOrder:
                 albumIntent= new Intent(Intent.ACTION_PICK, null);
                 albumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                this.startActivityForResult(albumIntent, 100);
+                this.startActivityForResult(albumIntent, 15);
+                break;
+            case R.id.editOrder:
+                try {
+                    Intent intent = new Intent(DetailsActivity.this, OrderEditActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("data", jsonObject1.toString());
+                    bundle.putString("orderId", orderId);
+                    bundle.putString("code", code);
+                    Logger.i(jsonObject1.toString());
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                    finish();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 break;
             default:
                 break;
         }
         return true;
     }
+
 
 
     class ImageAscynTask extends Thread {
@@ -363,6 +431,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
             handler.post(new Runnable() {
                 @Override
                 public void run() {
+
                     try {
                         for (int i = 0; i < bitmaps.size(); i++){
                             View view = LayoutInflater.from(DetailsActivity.this).inflate(R.layout.orderlist_details_image, null);

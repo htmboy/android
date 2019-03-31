@@ -76,7 +76,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             public void onSucceed(Response<String> response) {
                 JSONObject jsonObject = null;
                 String str = response.get();
-//                Logger.i(str);
+                Logger.i(str);
                 int code = 0;
                 try {
                     jsonObject = new JSONObject(str);
