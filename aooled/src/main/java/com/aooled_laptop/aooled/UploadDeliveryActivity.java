@@ -101,6 +101,7 @@ public class UploadDeliveryActivity extends AppCompatActivity implements View.On
         Request<String> request = new StringRequest(Constants.URL_UPLOAD, RequestMethod.POST);
         request.add("orderId", orderId);
         request.add("code", 35);
+        request.add("deliveryNumber", deliveryNumber.getText().toString().trim());
         request.add("image", new FileBinary(new File(imagePath)));
         request.add("mark", code);
         RequestExecutor.INTANCE.execute(request, new HttpListener<String>() {
