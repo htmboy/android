@@ -34,6 +34,9 @@
         <activity android:name=".OrderEditActivity">
 
         </activity>
+        <activity android:name=".UploadDeliveryActivity">
+
+        </activity>
     </application>
 
 </manifest>

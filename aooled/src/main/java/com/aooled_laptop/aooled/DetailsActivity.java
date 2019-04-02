@@ -257,9 +257,9 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onSucceed(Response<String> response) {
                 JSONObject jsonObject = null;
-                Logger.i("Activity 接受到的响应码:" + response.getResponseCode());
+//                Logger.i("Activity 接受到的响应码:" + response.getResponseCode());
                 String str = response.get();
-                Logger.i("Activity 接受到的结果:" + str);
+//                Logger.i("Activity 接受到的结果:" + str);
                 int code = 0;
                 try {
                     jsonObject = new JSONObject(str);
@@ -400,7 +400,20 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
                     bundle.putString("data", jsonObject1.toString());
                     bundle.putString("orderId", orderId);
                     bundle.putString("code", code);
-                    Logger.i(jsonObject1.toString());
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                    finish();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.uploadDelivery:
+                try {
+                    Intent intent = new Intent(DetailsActivity.this, UploadDeliveryActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("data", jsonObject1.toString());
+                    bundle.putString("orderId", orderId);
+                    bundle.putString("code", code);
                     intent.putExtras(bundle);
                     startActivity(intent);
                     finish();
