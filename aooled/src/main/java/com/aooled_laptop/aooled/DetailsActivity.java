@@ -128,8 +128,8 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
                 editOrder.setVisible(true);
                 break;
             case "22": // 第二审核
-                reUploadOrder.setVisible(true);
-                editOrder.setVisible(true);
+//                reUploadOrder.setVisible(true);
+//                editOrder.setVisible(true);
                 break;
             case "23": // 放行条一审
                 break;
@@ -151,12 +151,13 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
                 uploadDelivery.setVisible(true);
                 break;
             case "42": // 放行条有误
-                reUploadDelivery.setVisible(true);
+                uploadDelivery.setVisible(true);
                 break;
             case "51": // 放行条信息有误
                 reUploadDelivery.setVisible(true);
                 break;
             case "61": // 等待发货及收款
+                uploadDelivery.setVisible(true);
                 break;
             case "62": // 收款中
                 break;
@@ -305,7 +306,7 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
                         tail.setText(jsonObject1.optString("tail"));
                         tailDate.setText("0".equals(jsonObject1.optString("tailDate")) ? "/" : TimestampUtil.getCurrentTime(jsonObject1.optString("tailDate")));
                         contractAmount.setText(jsonObject1.optString("contractAmount"));
-                        if("16".equals(orderStatus)){
+                        if("16".equals(orderStatus) || "42".equals(orderStatus)){
                             errorLog.setText("错误信息: " + jsonObject1.optString("errorLog"));
                             errorLog.setVisibility(View.VISIBLE);
                         }
