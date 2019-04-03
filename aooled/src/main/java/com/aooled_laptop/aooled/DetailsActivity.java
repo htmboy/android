@@ -157,12 +157,13 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
                 reUploadDelivery.setVisible(true);
                 break;
             case "61": // 等待发货及收款
-                uploadDelivery.setVisible(true);
+                modifyOrder.setVisible(true);
                 break;
             case "62": // 收款中
+                modifyOrder.setVisible(true);
                 break;
             case "63": // 发货中
-                uploadDelivery.setVisible(true);
+                modifyOrder.setVisible(true);
                 break;
             case "64": // 等待发放提成
                 break;
@@ -411,6 +412,20 @@ public class DetailsActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.uploadDelivery:
                 try {
                     Intent intent = new Intent(DetailsActivity.this, UploadDeliveryActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("data", jsonObject1.toString());
+                    bundle.putString("orderId", orderId);
+                    bundle.putString("code", code);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                    finish();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.modifyOrder:
+                try {
+                    Intent intent = new Intent(DetailsActivity.this, OrderModifyActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("data", jsonObject1.toString());
                     bundle.putString("orderId", orderId);

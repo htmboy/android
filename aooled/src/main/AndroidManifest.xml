@@ -37,6 +37,9 @@
         <activity android:name=".UploadDeliveryActivity">
 
         </activity>
+        <activity android:name=".OrderModifyActivity">
+
+        </activity>
     </application>
 
 </manifest>
