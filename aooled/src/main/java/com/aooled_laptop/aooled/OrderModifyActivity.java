@@ -1,7 +1,11 @@
 package com.aooled_laptop.aooled;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +17,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +26,7 @@ import com.aooled_laptop.aooled.error.TimeoutError;
 import com.aooled_laptop.aooled.error.URLError;
 import com.aooled_laptop.aooled.error.UnknowHostError;
 import com.aooled_laptop.aooled.model.Order;
+import com.aooled_laptop.aooled.task.FileBinary;
 import com.aooled_laptop.aooled.task.HttpListener;
 import com.aooled_laptop.aooled.task.Request;
 import com.aooled_laptop.aooled.task.RequestExecutor;
@@ -29,11 +35,16 @@ import com.aooled_laptop.aooled.task.Response;
 import com.aooled_laptop.aooled.task.StringRequest;
 import com.aooled_laptop.aooled.utils.Constants;
 import com.aooled_laptop.aooled.utils.Logger;
+import com.aooled_laptop.aooled.utils.StringUtils;
 import com.aooled_laptop.aooled.utils.TimestampUtil;
+import com.aooled_laptop.aooled.utils.UriToFilePath;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Calendar;
 
 public class OrderModifyActivity extends AppCompatActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, DatePicker.OnDateChangedListener, TextWatcher {
@@ -45,8 +56,8 @@ public class OrderModifyActivity extends AppCompatActivity implements View.OnCli
     private int year, month, day;
     private StringBuffer date = new StringBuffer();
     private Order order = new Order();
-    private String orderId;
-    private String code;
+    private String orderId, code, replyImagePath, newOrderPath;
+    private ImageView replyImage, newOrder;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,6 +89,8 @@ public class OrderModifyActivity extends AppCompatActivity implements View.OnCli
         assuranceDate.setOnClickListener(this);
         contractAmount.addTextChangedListener(this);
         deposit.addTextChangedListener(this);
+        replyImage.setOnClickListener(this);
+        newOrder.setOnClickListener(this);
     }
 
     private void init(){
@@ -116,6 +129,9 @@ public class OrderModifyActivity extends AppCompatActivity implements View.OnCli
         assuranceDateLabel = findViewById(R.id.assuranceDateLabel);
         constructionAmountLabel = findViewById(R.id.constructionAmountLabel);
         constructionAccountLabel = findViewById(R.id.constructionAccountLabel);
+
+        replyImage = findViewById(R.id.replyImage);
+        newOrder = findViewById(R.id.newOrder);
     }
 
     private void initDateTime() {
@@ -165,27 +181,82 @@ public class OrderModifyActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.submit:
                 if(submitData()) {
-                    submit(true);
+                    submit();
                 }
                 break;
-//            case R.id.fillDate:
-//                showAlertDialog(fillDate);
-//                break;
             case R.id.tailDate:
                 showAlertDialog(tailDate);
                 break;
             case R.id.assuranceDate:
                 showAlertDialog(assuranceDate);
                 break;
+            case R.id.replyImage:
+                Intent albumIntent= new Intent(Intent.ACTION_PICK, null);
+                albumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                this.startActivityForResult(albumIntent, 100);
+                break;
+            case R.id.newOrder:
+                albumIntent= new Intent(Intent.ACTION_PICK, null);
+                albumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                this.startActivityForResult(albumIntent, 200);
+                break;
         }
 
     }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK ) {
+            if (requestCode == 100) {
+                replyImagePath = UriToFilePath.handleImageOnKitkat(this, data);
+                if(replyImagePath == null)
+                    Toast.makeText(this, "选择批复影印件失败", Toast.LENGTH_SHORT).show();
+                else
+                    showPicOptimize(replyImage, replyImagePath);
+            }
+            if (requestCode == 200){
+                newOrderPath = UriToFilePath.handleImageOnKitkat(this, data);
+                if(newOrderPath == null)
+                    Toast.makeText(this, "选择生产单失败", Toast.LENGTH_SHORT).show();
+                else
+                    showPicOptimize(newOrder, newOrderPath);
+            }
 
-    public void submit(boolean isSubmit){
+        }
+    }
+    private void showPicOptimize(ImageView imageView, String path){
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, options);
+        options.inPreferredConfig = Bitmap.Config.RGB_565;
+        options.inJustDecodeBounds = false;
+        Bitmap bitmap = BitmapFactory.decodeFile(path, options);
+        imageView.setImageBitmap(bitmap);
+    }
+
+    public void submit(){
         Request<String> request = new StringRequest(Constants.URL_UPLOAD, RequestMethod.POST);
         request.add("code", "36");
         request.add("orderId", orderId);
-        request.add("data", order.toJson());
+        Method[] ms = order.getClass().getDeclaredMethods();
+        String name;
+        try {
+            for (Method m : ms) {
+
+                if ("get".equals(m.getName().substring(0, 3))) {
+                    name = m.getName();
+                    if("getCode".equals(m.getName()))
+                        request.add("mark", (String) m.invoke(order, (Object[]) null));
+                    else
+                        request.add(m.getName().substring(3, 4).toLowerCase() + m.getName().substring(4), (String) m.invoke(order, (Object[]) null));
+
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        request.add("replyImage", new FileBinary(new File(replyImagePath)));
+        request.add("orderImage", new FileBinary(new File(newOrderPath)));
         RequestExecutor.INTANCE.execute(request, new HttpListener<String>() {
 
             @Override
@@ -212,11 +283,6 @@ public class OrderModifyActivity extends AppCompatActivity implements View.OnCli
                     case 2: // 初始化找到记录时, 处理记录的数据
                         Toast.makeText(OrderModifyActivity.this, "有未处理的记录", Toast.LENGTH_SHORT).show();
                         dealResponse(jsonObject.optString("data"));
-                        break;
-                    case 3: // 初始化没有找到记录, 则生成订单号
-                        Toast.makeText(OrderModifyActivity.this, "无记录", Toast.LENGTH_SHORT).show();
-                        orderNumber.setText(jsonObject.optString("orderNumber"));
-                        fillDate.setText(TimestampUtil.getCurrentTime(jsonObject.optString("fillDate")));
                         break;
                     default:
                         break;
@@ -245,14 +311,7 @@ public class OrderModifyActivity extends AppCompatActivity implements View.OnCli
     public boolean submitData(){
         order.setId(orderId);
         order.setCode(code);
-//        if ("".equals(getData(orderNumber)) || getData(orderNumber) == null)
-//            return false;
         order.setOrderNumber(getData(orderNumber));
-
-//        if ("".equals(getData(fillDate)) || getData(fillDate) == null){
-//            Toast.makeText(this, "请填写", Toast.LENGTH_SHORT).show();
-//            return false;
-//        }
 
         order.setFillDate(getData(fillDate));
 
@@ -336,10 +395,6 @@ public class OrderModifyActivity extends AppCompatActivity implements View.OnCli
         }
         order.setDeposit(getData(deposit));
 
-//        if ("".equals(getData(tail)) || getData(tail) == null)
-//            return false;
-//        order.setTail(getData(tail));
-
         if ("".equals(getData(tailDate)) || getData(tailDate) == null){
             Toast.makeText(this, "请选择收款日期", Toast.LENGTH_SHORT).show();
             return false;
@@ -386,6 +441,15 @@ public class OrderModifyActivity extends AppCompatActivity implements View.OnCli
         order.setAlterReciept(getData(isAlterReciept));
         order.setNoticeDelivery(getData(isNoticeDelivery));
         order.setContainTax(getData(isContainTax));
+
+        if(StringUtils.isEmpty(replyImagePath)){
+            Toast.makeText(this, "请选择批复影印件", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(StringUtils.isEmpty(newOrderPath)){
+            Toast.makeText(this, "请选择新的生产单", Toast.LENGTH_SHORT).show();
+            return false;
+        }
 
 
         return true;

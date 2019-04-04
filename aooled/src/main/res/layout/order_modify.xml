@@ -533,6 +533,7 @@
                 android:layout_height="wrap_content"
                 android:text="批复复印件"/>
             <ImageView
+                android:id="@+id/replyImage"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:background="@android:color/background_light"/>
@@ -541,6 +542,7 @@
                 android:layout_height="wrap_content"
                 android:text="新的生产单"/>
             <ImageView
+                android:id="@+id/newOrder"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:background="@android:color/background_light"/>

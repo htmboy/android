@@ -8,7 +8,7 @@ import android.util.Log;
 public class Logger {
 
     // 打印log的tag
-    public static final String TAG = "IMOOCUpload";
+    public static final String TAG = "HTMBOY";
 
     // 控制打印log的开关
     public static final boolean DEBUG = true;
