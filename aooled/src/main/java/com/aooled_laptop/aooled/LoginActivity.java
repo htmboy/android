@@ -1,8 +1,19 @@
 package com.aooled_laptop.aooled;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.IntRange;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
@@ -51,6 +62,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             usernameText.setText(hashMap.get("username"));
             passwordText.setText(hashMap.get("password"));
         }
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {
+//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                // 不相等 请求授权
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CALL_PHONE}, 1);
+//            }
+        }
+
     }
 
     @Override
@@ -61,6 +79,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Toast.makeText(this, "用户名或密码不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
+
         login();
     }
 
@@ -109,6 +128,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         intent.setClass(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                         Logger.i("login");
+
                         finish();
                         break;
                     default:
